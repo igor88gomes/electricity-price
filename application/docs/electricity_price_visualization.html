@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>electricity_price_visualization.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>electricity_price_visualization.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">plotly.graph_objects</span> <span class="k">as</span> <span class="nn">go</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Funktion för att skapa en Pandas DataFrame från elpris_data</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">create_pandas_dataframe</span><span class="p">(</span><span class="n">elpris_data</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <pre><code>Skapa en Pandas DataFrame från elprisdata.
+
+Denna funktion extraherar de första 24 timmarna
+av prisdata och skapar en Pandas DataFrame
+med två kolumner: tid och pris.
+
+Args:
+</code></pre>
+<p>elpris_data (list): En lista med elprisdata.</p>
+<pre><code>Returns:
+</code></pre>
+<p>pd.DataFrame: En Pandas DataFrame som innehåller
+   tid och prisdata.</p>
+<p>Extrahera de första 24 timmarna av prisdata</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">current_prices</span> <span class="o">=</span> <span class="p">[(</span><span class="n">hour</span><span class="p">,</span> <span class="n">price</span><span class="p">[</span><span class="s1">&#39;SEK_per_kWh&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">hour</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">elpris_data</span><span class="p">[:</span><span class="mi">24</span><span class="p">])]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Skapa en Pandas DataFrame med två kolumner: tid och pris</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;Tidpunkt på dygnet i (hh:mm)&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hour</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">:00&quot;</span> <span class="k">for</span> <span class="n">hour</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">current_prices</span><span class="p">],</span>
+                       <span class="s1">&#39;Motsvarande pris i (kr/kWh)&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">price</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="n">current_prices</span><span class="p">]})</span>
+    <span class="k">return</span> <span class="n">df</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Funktion för att skapa en HTML-tabell från en Pandas DataFrame</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">create_pandas_table</span><span class="p">(</span><span class="n">current_prices</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <pre><code>Skapa en HTML-tabell från en Pandas DataFrame.
+
+Denna funktion konverterar en Pandas DataFrame
+till en HTML-tabell med specificerad formatering.
+
+Args:
+</code></pre>
+<p>current_prices (pd.DataFrame): En Pandas
+   DataFrame med prisdata.</p>
+<pre><code>Returns:
+</code></pre>
+<p>str: En HTML-tabell som en sträng.</p>
+<p>Konvertera Pandas DataFrame till en HTML-tabell med specificerad formatering</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">pandas_table</span> <span class="o">=</span> <span class="n">current_prices</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">classes</span><span class="o">=</span><span class="s2">&quot;table table-bordered table-striped&quot;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                          <span class="n">escape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pandas_table</span>  <span class="c1"># Returnera HTML-tabellen</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Funktion för att skapa en Plotly-diagram</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">create_plotly_chart</span><span class="p">(</span><span class="n">current_prices</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">price_class</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <pre><code>Skapa ett Plotly-diagram från prisdata.
+
+Denna funktion skapar ett Plotly-diagram baserat
+på prisdata, datum och prisklass.
+
+Args:
+</code></pre>
+<p>current_prices (pd.DataFrame): En Pandas
+   DataFrame med prisdata.</p>
+<p>date (str): Datum för datan.
+   price_class (str): Prisklass för datan.</p>
+<pre><code>Returns:
+</code></pre>
+<p>str: Ett HTML-diagram som en sträng.</p>
+<p>Skapa en ny Plotly-figur</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Lägg till en linjetrajekt till figuren med tid och prisdata</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">current_prices</span><span class="p">[</span><span class="s1">&#39;Tidpunkt på dygnet i (hh:mm)&#39;</span><span class="p">],</span>
+        <span class="n">y</span><span class="o">=</span><span class="n">current_prices</span><span class="p">[</span><span class="s1">&#39;Motsvarande pris i (kr/kWh)&#39;</span><span class="p">],</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;lines&#39;</span>
+    <span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Ställ in diagramlayout med titel och axelrubriker</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Datum: </span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s1">&lt;br&gt;Prisklass: </span><span class="si">{</span><span class="n">price_class</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;Tidpunkt på dygnet i (hh:mm)&#39;</span><span class="p">,</span>
+        <span class="n">yaxis_title</span><span class="o">=</span><span class="s1">&#39;Motsvarande pris i (kr/kWh)&#39;</span>
+    <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Konvertera diagrammet till HTML och returnera det</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">chart_html</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">full_html</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">chart_html</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Funktion för att skapa ett Plotly-diagram från prisdata, datum och prisklass</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">create_chart</span><span class="p">(</span><span class="n">current_prices</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">price_class</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <pre><code>Skapa ett Plotly-diagram från prisdata, datum
+och prisklass.
+
+Denna funktion skapar ett Plotly-diagram baserat
+på den tillhandahållna datan, datum och prisklass.
+
+Args:
+</code></pre>
+<p>current_prices (pd.DataFrame): En Pandas
+   DataFrame med prisdata.</p>
+<p>date (str): Datum för datan.
+   price_class (str): Prisklass för datan.</p>
+<pre><code>Returns:
+</code></pre>
+<p>str: Ett HTML-diagram som en sträng.</p>
+<p>Skapa ett Plotly-diagram med den tillhandahållna datan</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">chart_html</span> <span class="o">=</span> <span class="n">create_plotly_chart</span><span class="p">(</span><span class="n">current_prices</span><span class="p">,</span> <span class="n">date</span><span class="p">,</span> <span class="n">price_class</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">chart_html</span>  <span class="c1"># Returnera HTML-diagrammet</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

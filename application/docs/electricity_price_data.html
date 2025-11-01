@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>electricity_price_data.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>electricity_price_data.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">application.electricity_price_visualization</span> <span class="kn">import</span> <span class="n">create_pandas_dataframe</span>
+<span class="kn">from</span> <span class="nn">application.data_fetcher</span> <span class="kn">import</span> <span class="n">get_elpris_data_from_api</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Funktion för att extrahera datum från elprisdata</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">extract_date_from_elpris_data</span><span class="p">(</span><span class="n">elpris_data</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <pre><code>Extrahera datum från elprisdata.
+
+Denna funktion extraherar datumet från den första
+datan i den tillhandahållna datan.
+
+Args:
+</code></pre>
+<p>elpris_data (list): En lista med elprisdata.</p>
+<pre><code>Returns:
+</code></pre>
+<p>str: Det extraherade datumet.</p>
+<p>Extrahera datumet från den första datan i den tillhandahållna datan</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">date</span> <span class="o">=</span> <span class="n">elpris_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;time_start&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">date</span>  <span class="c1"># Returnera det extraherade datumet</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Funktion för att hämta och behandla elprisdata</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">fetch_and_process_elpris_data</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">price_class</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <pre><code>Hämta och behandla elprisdata.
+
+Denna funktion konstruerar API URL:en med det
+angivna året, månaden, dagen och prisklassen.
+Den hämtar elprisdata från API:en och hämtar
+aktuell datum och tid. Funktionen kontrollerar om
+datan inte är tillgänglig och om aktuell tid är
+före kl. 13:00.
+
+Args:
+</code></pre>
+<p>year (int): År för elprisdata.
+   month (int): Månad för elprisdata.
+   day (int): Dag för elprisdata.
+   price_class (str): Prisklass för elprisdata.</p>
+<pre><code>Returns:
+</code></pre>
+<p>pd.DataFrame or None, str or None: En Pandas
+   DataFrame med de behandlade elprisdata om datan är
+   tillgänglig och aktuell tid är inte före kl. 13:00.
+   Annars returneras None och ett felmeddelande.</p>
+<p>Konstruera API URL:en med det angivna året, månaden, dagen och prisklassen</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">api_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://www.elprisetjustnu.se/api/v1/prices/</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">month</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">day</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">price_class</span><span class="si">}</span><span class="s2">.json&quot;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Hämta elprisdata från API:en</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">elpris_data</span> <span class="o">=</span> <span class="n">get_elpris_data_from_api</span><span class="p">(</span><span class="n">api_url</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Hämta aktuell datum och tid</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">current_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Kontrollera om datan inte är tillgänglig pga aktuell tid är före kl. 13:00</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">elpris_data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">current_time</span><span class="o">.</span><span class="n">hour</span> <span class="o">&lt;</span> <span class="mi">13</span><span class="p">:</span>
+        <span class="n">error_message</span> <span class="o">=</span> <span class="s2">&quot;Åtkomst till nästa dags elprisdata kommer att vara tillgänglig efter kl. 13:00.&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">error_message</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Skapa en Pandas DataFrame från den hämtade datan</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">current_prices</span> <span class="o">=</span> <span class="n">create_pandas_dataframe</span><span class="p">(</span><span class="n">elpris_data</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Extrahera datum från datan</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">date</span> <span class="o">=</span> <span class="n">elpris_data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;time_start&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">current_prices</span><span class="p">,</span> <span class="n">date</span>  <span class="c1"># Returnera den aktuella datan och datumet</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

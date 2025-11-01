@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>date_utils.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>date_utils.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <pre><code>Hämta minsta och största tillåtna datum.
+
+Denna funktion sätter det minsta tillåtna datumet till
+'2022-11-01' och det största tillåtna datumet till
+dagens datum plus en dag.
+
+Returns:
+</code></pre>
+<p>datetime, datetime: Det minsta och det största
+   tillåtna datumet som datetime-objekt.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_min_max_allowed_dates</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Sätt det minsta tillåtna datumet till &lsquo;2022-11-01&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">min_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Sätt det största tillåtna datumet till dagens datum plus en dag</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">max_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">min_date</span><span class="p">,</span> <span class="n">max_date</span>  <span class="c1"># Returnera det minsta och det största tillåtna datumet</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Funktion för att hämta standardvärden för formulär</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_default_form_field_values</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <pre><code>Hämta standardvärden för formuläret.
+
+Denna funktion hämtar det aktuella datumet och
+extraherar året, månaden och dagen. Den sätter
+standardprisklassen till 'SE3'.
+
+Returns:
+</code></pre>
+<p>int, int, int, str: År, månad, dag och
+   standardprisklass.</p>
+<p>Hämta aktuellt datum och tid</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">current_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Extrahera år, månad och dag från aktuellt datum</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">year</span> <span class="o">=</span> <span class="n">current_date</span><span class="o">.</span><span class="n">year</span>
+    <span class="n">month</span> <span class="o">=</span> <span class="n">current_date</span><span class="o">.</span><span class="n">month</span>
+    <span class="n">day</span> <span class="o">=</span> <span class="n">current_date</span><span class="o">.</span><span class="n">day</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Sätt standardprisklassen till &lsquo;SE3&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">price_class</span> <span class="o">=</span> <span class="s1">&#39;SE3&#39;</span>
+
+    <span class="k">return</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">price_class</span>  <span class="c1"># Returnera standardvärden för formuläret</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Funktion för att kontrollera om ett angivet datum är giltigt</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">is_valid_date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <pre><code>Kontrollera om ett angivet datum är giltigt.
+
+Denna funktion skapa ett datetime-objekt från
+det angivna året, månaden och dagen. Den sätter
+det minsta tillåtna datumet till '2022-11-01'
+och det största tillåtna datumet till dagens
+datum plus en dag. Funktionen kontrollerar om
+det angivna datumet ligger inom det tillåtna
+intervallet.
+
+Args:
+</code></pre>
+<p>year (int): År som ska kontrolleras.
+   month (int): Månad som ska kontrolleras.
+   day (int): Dag som ska kontrolleras.</p>
+<pre><code>Returns:
+</code></pre>
+<p>bool: True om datumet är giltigt, annars False.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">try</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Skapa ett datetime-objekt från det angivna året, månaden och dagen</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Sätt det minsta tillåtna datumet till &lsquo;2022-11-01&rsquo;</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">min_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Sätt det största tillåtna datumet till dagens datum plus en dag</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">max_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Kontrollera om datumet ligger inom det tillåtna intervallet</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">return</span> <span class="n">min_date</span> <span class="o">&lt;=</span> <span class="n">date</span> <span class="o">&lt;=</span> <span class="n">max_date</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># Hantera fallet där datumet inte är giltigt</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Funktion för att validera ett angivet datum</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">validate_date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <pre><code>Validera ett angivet datum.
+
+Denna funktion använder is_valid_date-funktionen
+för att kontrollera om det angivna datumet är
+giltigt. Om datumet inte är giltigt, returneras
+en felmeddelande och en statuskod 404.
+
+Args:
+</code></pre>
+<p>year (int): År att validera.
+   month (int): Månad att validera.
+   day (int): Dag att validera.</p>
+<pre><code>Returns:
+</code></pre>
+<p>str or None, int: Ett felmeddelande om datumet
+   inte är giltigt, annars None, och statuskod 404
+   om fel uppstår.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid_date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;Sidan är begränsad till en dag i förväg och senast 2022-11-01 bakåt i tiden.&quot;</span><span class="p">,</span> <span class="mi">404</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

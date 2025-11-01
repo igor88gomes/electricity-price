@@ -1,0 +1,53 @@
+﻿# --- Python / Flask ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+.dist-info/
+build/
+dist/
+
+# --- Virtuella miljöer (skapas lokalt, ska inte till Git) ---
+.venv/
+venv/
+env/
+
+# --- Miljövariabler / hemligheter ---
+.env
+.env.local
+*.secret
+*.key
+
+# --- Test-artefakter ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.code-workspace
+
+# --- OS-specifika filer ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Loggar ---
+*.log
+
+# --- Jupyter (om det används) ---
+.ipynb_checkpoints/
+
+# --- Node (om frontend dyker upp senare) ---
+node_modules/
