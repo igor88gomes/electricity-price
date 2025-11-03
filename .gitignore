@@ -1,4 +1,4 @@
-﻿# --- Python / Flask ---
+﻿# Python / Flask
 __pycache__/
 *.py[cod]
 *.pyo
@@ -12,42 +12,46 @@ pip-wheel-metadata/
 build/
 dist/
 
-# --- Virtuella miljöer (skapas lokalt, ska inte till Git) ---
+# Virtuella miljöer (skapas lokalt, ska inte till Git) 
 .venv/
 venv/
 env/
+__pypackages__/            # PEP 582
 
-# --- Miljövariabler / hemligheter ---
+# Miljövariabler / hemligheter
 .env
 .env.local
+.env.*                     # ex: .env.dev / .env.prod
+*.env                      # env-filer med godtyckliga namn
 *.secret
 *.key
+.python-version            # pyenv-versionfil
 
-# --- Test-artefakter ---
+# Test-artefakter 
 .pytest_cache/
 .coverage
 .coverage.*
+coverage.xml               # pytest coverage-rapport (XML)
 htmlcov/
 .tox/
 .mypy_cache/
 .ruff_cache/
 .cache/
 
-# --- IDE / Editor ---
+# Flask (lokal instansdata)
+instance/
+
+# IDE / Editor 
 .vscode/
 .idea/
 *.code-workspace
 
-# --- OS-specifika filer ---
+# OS-specifika filer 
 .DS_Store
 Thumbs.db
 desktop.ini
+*~
+*.swp
 
-# --- Loggar ---
+# Loggar 
 *.log
-
-# --- Jupyter (om det används) ---
-.ipynb_checkpoints/
-
-# --- Node (om frontend dyker upp senare) ---
-node_modules/

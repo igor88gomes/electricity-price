@@ -44,7 +44,7 @@ def get_default_form_field_values():
     day = current_date.day
 
     # Sätt standardprisklassen till 'SE3'
-    price_class = 'SE3'
+    price_class = "SE3"
 
     return year, month, day, price_class  # Returnera standardvärden för formuläret
 
@@ -108,6 +108,3 @@ def validate_date(year, month, day):
     """
     if not is_valid_date(year, month, day):
         return "Sidan är begränsad till en dag i förväg och senast 2022-11-01 bakåt i tiden.", 404
-
-
-

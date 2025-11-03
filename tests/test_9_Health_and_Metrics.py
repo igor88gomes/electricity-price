@@ -1,6 +1,9 @@
 import re
+
 import pytest
+
 from application.app import app
+
 
 @pytest.fixture
 def client():
@@ -9,6 +12,7 @@ def client():
     Används av varje test för att göra HTTP-anrop utan att starta en riktig server.
     """
     return app.test_client()
+
 
 def test_healthz_ok(client):
     """
@@ -19,6 +23,7 @@ def test_healthz_ok(client):
     assert r.status_code == 200
     assert b"ok" in r.data
 
+
 def test_readyz_ok(client):
     """
     Verifierar readiness-endpointen (/readyz).
@@ -27,6 +32,7 @@ def test_readyz_ok(client):
     r = client.get("/readyz")
     assert r.status_code == 200
     assert b"ready" in r.data
+
 
 def test_metrics_exposes_custom_metrics(client):
     """
@@ -52,5 +58,5 @@ def test_metrics_exposes_custom_metrics(client):
     assert "app_request_latency_seconds" in text
 
     # 3) Validera att räknaren har åtminstone ett värde
-    m = re.search(r'app_http_requests_total\{.*\}\s+(\d+(\.\d+)?)', text)
+    m = re.search(r"app_http_requests_total\{.*\}\s+(\d+(\.\d+)?)", text)
     assert m is not None

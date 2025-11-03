@@ -1,6 +1,10 @@
 import pytest
 import requests
-from application.electricity_price_data import extract_date_from_elpris_data, get_elpris_data_from_api
+
+from application.electricity_price_data import (
+    extract_date_from_elpris_data,
+    get_elpris_data_from_api,
+)
 
 
 # Mocka requests-modulen för att testa get_elpris_data_from_api

@@ -28,6 +28,6 @@ def get_elpris_data_from_api(api_url):
 
         # Returnera JSON-responsdata
         return response.json()
-    except requests.exceptions.RequestException as e:
+    except requests.exceptions.RequestException:
         # Hantera undantag och returnera None om hämtning av data misslyckas
         return None

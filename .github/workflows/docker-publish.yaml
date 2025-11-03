@@ -1,0 +1,81 @@
+name: CD (build & publish DEV + GitOps PR)
+
+on:
+  push:
+    branches:
+      - main     # Efter merge till main → bygg DEV-image
+  workflow_dispatch: {}
+
+env:
+  IMAGE_REPO: ghcr.io/igor88gomes/electricity-price
+  GITOPS_REPO: igor88gomes/electricity-price-gitops
+  DEV_VALUES: environments/dev/values.yaml
+
+permissions:
+  contents: write          # Behövs för att skapa PR mot GitOps-repo via GITHUB_TOKEN när samma org
+  pull-requests: write
+  packages: write          # push till GHCR
+
+jobs:
+  build-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Buildx (multi-arch)
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set tags
+        id: meta
+        run: |
+          echo "DEV_TAG=dev-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+      - name: Build & publish multi-arch (amd64, arm64)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ env.IMAGE_REPO }}:${{ steps.meta.outputs.DEV_TAG }}
+
+      - name: Validate GH_PAT
+        if: ${{ secrets.GH_PAT == '' }}
+        run: |
+          echo "Missing GH_PAT token!"
+          exit 1
+
+      - name: Prepare GitOps commit (update DEV values)
+        run: |
+          git config --global user.name  "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Klona GitOps-repot med PAT (kräver fine-grained token GH_PAT)
+          git clone https://${{ secrets.GH_PAT }}@github.com/${{ env.GITOPS_REPO }} gitops
+          cd gitops
+
+          # Byt endast 'image.tag:'-raden i DEV values.yaml
+          sed -i "s|^  tag: .*|  tag: ${{ steps.meta.outputs.DEV_TAG }}|" ${{ env.DEV_VALUES }}
+
+          # Skapa ny branch och commit
+          BR=chore/dev-image-${{ steps.meta.outputs.DEV_TAG }}
+          git checkout -b "$BR"
+          git add ${{ env.DEV_VALUES }}
+          git commit -m "chore(gitops): set DEV image tag to ${{ steps.meta.outputs.DEV_TAG }}"
+
+          # Skapa PR via GitHub CLI (installerar snabbt)
+          echo "${{ secrets.GH_PAT }}" | gh auth login --with-token
+          gh repo set-default ${{ env.GITOPS_REPO }}
+          gh pr create --base main --head "$BR" \
+            --title "chore(gitops): DEV → ${{ steps.meta.outputs.DEV_TAG }}" \
+            --body "Automatiskt PR: uppdaterar \`${{ env.DEV_VALUES }}\` till \`${{ steps.meta.outputs.DEV_TAG }}\`."
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}

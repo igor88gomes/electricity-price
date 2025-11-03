@@ -1,0 +1,56 @@
+name: CI (lint, tester, coverage)
+
+on:
+  pull_request:
+  push:
+    branches-ignore:
+      - main  # CI i feature/PR. (Publish sker i andra workflows)
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies (app + test + lint)
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install ruff pytest-cov
+
+      - name: Ruff static analysis (lint)
+        run: ruff check .
+
+      - name: Ruff formatting check
+        run: ruff format --check .
+
+      - name: Run Pytest with coverage (XML)
+        run: |
+          pytest -q --cov=application --cov-report=xml
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+
+      - name: Generate coverage HTML report
+        run: |
+          python -m coverage html -i
+
+      - name: Upload coverage HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov
+          if-no-files-found: error
+          retention-days: 10

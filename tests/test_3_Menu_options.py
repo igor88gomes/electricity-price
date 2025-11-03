@@ -10,7 +10,5 @@ def test_menu_options():
     # Kontrollera om varje element i listan är en dictionary med nycklarna 'name' och 'url'
     for option in menu_options:
         assert isinstance(option, dict)
-        assert 'name' in option
-        assert 'url' in option
-
-
+        assert "name" in option
+        assert "url" in option

@@ -1,4 +1,5 @@
 import requests
+
 from application.data_fetcher import get_elpris_data_from_api
 
 
@@ -21,7 +22,7 @@ def test_get_elpris_data_from_api_success(monkeypatch):
     def mock_requests_get(api_url):
         return MockResponse(200, {"key": "value"})
 
-    monkeypatch.setattr(requests, 'get', mock_requests_get)
+    monkeypatch.setattr(requests, "get", mock_requests_get)
 
     api_url = "https://elprisetjustnu.com/api/data"
     response = get_elpris_data_from_api(api_url)
@@ -35,7 +36,7 @@ def test_fetch_elpris_data_failure(monkeypatch):
     def mock_requests_get(api_url):
         return MockResponse(404, {"error": "Not Found"})
 
-    monkeypatch.setattr(requests, 'get', mock_requests_get)
+    monkeypatch.setattr(requests, "get", mock_requests_get)
 
     api_url = "https://elprisetjustnu.com/api/data"
     response = get_elpris_data_from_api(api_url)

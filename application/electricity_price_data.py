@@ -1,6 +1,7 @@
 from datetime import datetime
-from application.electricity_price_visualization import create_pandas_dataframe
+
 from application.data_fetcher import get_elpris_data_from_api
+from application.electricity_price_visualization import create_pandas_dataframe
 
 
 # Funktion för att extrahera datum från elprisdata
@@ -18,7 +19,7 @@ def extract_date_from_elpris_data(elpris_data):
         str: Det extraherade datumet.
     """
     # Extrahera datumet från den första datan i den tillhandahållna datan
-    date = elpris_data[0]['time_start'].split('T')[0]
+    date = elpris_data[0]["time_start"].split("T")[0]
     return date  # Returnera det extraherade datumet
 
 
@@ -64,6 +65,6 @@ def fetch_and_process_elpris_data(year, month, day, price_class):
     current_prices = create_pandas_dataframe(elpris_data)
 
     # Extrahera datum från datan
-    date = elpris_data[0]['time_start'].split('T')[0]
+    date = elpris_data[0]["time_start"].split("T")[0]
 
     return current_prices, date  # Returnera den aktuella datan och datumet
