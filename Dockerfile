@@ -2,7 +2,7 @@
 FROM python:3.12-slim
 
 # Miljövariabler för att undvika .pyc-filer och få omedelbar loggning i stdout
-ENV PYTHONDONTWRITEBYTECODE=1 `
+ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
 # Skapa en icke-root användare för bättre säkerhet
@@ -13,7 +13,7 @@ WORKDIR /app
 
 # Kopiera Python-beroenden och installera dem (cachar inte hjul för att hålla bilden liten)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && `
+RUN pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir gunicorn
 
 # Kopiera applikationskoden (inkl. templates/static) till containern
@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt && `
 COPY application ./application
 
 # Standardport och Gunicorn-flaggar (enkla värden för demo/prod-lik miljö)
-ENV PORT=8000 `
+ENV PORT=8000 \
     GUNICORN_CMD_ARGS="--workers=2 --threads=2 --timeout=60"
 
 # Exponera porten där appen lyssnar
@@ -31,7 +31,7 @@ EXPOSE 8000
 USER appuser
 
 # Hälsokontroll: kollar /healthz var 30:e sekund (behöver att appen redan kör)
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 `
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
   CMD python -c "import urllib.request, sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz').getcode()==200 else 1)"
 
 # Startkommando: Gunicorn som WSGI-server, binder på alla interface
