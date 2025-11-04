@@ -53,7 +53,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
           # Klona GitOps-repot (använder GITHUB_TOKEN)
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.GITOPS_REPO }} gitops
+          git clone https://${{ secrets.GH_PAT }}@github.com/${{ env.GITOPS_REPO }} gitops
           cd gitops
 
           # Byt endast 'image.tag:'-raden i DEV values.yaml
@@ -71,4 +71,4 @@ jobs:
             --title "chore(gitops): DEV → ${{ steps.meta.outputs.DEV_TAG }}" \
             --body "Automatiskt PR: uppdaterar \`${{ env.DEV_VALUES }}\` till \`${{ steps.meta.outputs.DEV_TAG }}\`."
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
