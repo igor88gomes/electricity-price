@@ -45,18 +45,12 @@ jobs:
           tags: |
             ${{ env.IMAGE_REPO }}:${{ steps.meta.outputs.REL_TAG }}
 
-      - name: Validate GH_PAT
-        if: ${{ secrets.GH_PAT == '' }}
-        run: |
-          echo "Missing GH_PAT token!"
-          exit 1
-
       - name: PR to GitOps (update PROD values)
         run: |
           git config --global user.name  "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          git clone https://${{ secrets.GH_PAT }}@github.com/${{ env.GITOPS_REPO }} gitops
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.GITOPS_REPO }} gitops
           cd gitops
 
           sed -i "s|^  tag: .*|  tag: ${{ steps.meta.outputs.REL_TAG }}|" ${{ env.PROD_VALUES }}
@@ -66,10 +60,10 @@ jobs:
           git add ${{ env.PROD_VALUES }}
           git commit -m "release(gitops): prod -> ${{ steps.meta.outputs.REL_TAG }}"
 
-          echo "${{ secrets.GH_PAT }}" | gh auth login --with-token
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
           gh repo set-default ${{ env.GITOPS_REPO }}
           gh pr create --base main --head "$BR" \
             --title "release(gitops): PROD → ${{ steps.meta.outputs.REL_TAG }}" \
             --body "Uppdaterar \`${{ env.PROD_VALUES }}\` till **${{ steps.meta.outputs.REL_TAG }}** (SemVer-release)."
         env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

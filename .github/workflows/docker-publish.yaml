@@ -47,19 +47,13 @@ jobs:
           tags: |
             ${{ env.IMAGE_REPO }}:${{ steps.meta.outputs.DEV_TAG }}
 
-      - name: Validate GH_PAT
-        if: ${{ secrets.GH_PAT == '' }}
-        run: |
-          echo "Missing GH_PAT token!"
-          exit 1
-
       - name: Prepare GitOps commit (update DEV values)
         run: |
           git config --global user.name  "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Klona GitOps-repot med PAT (kräver fine-grained token GH_PAT)
-          git clone https://${{ secrets.GH_PAT }}@github.com/${{ env.GITOPS_REPO }} gitops
+          # Klona GitOps-repot (använder GITHUB_TOKEN)
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.GITOPS_REPO }} gitops
           cd gitops
 
           # Byt endast 'image.tag:'-raden i DEV values.yaml
@@ -72,10 +66,10 @@ jobs:
           git commit -m "chore(gitops): set DEV image tag to ${{ steps.meta.outputs.DEV_TAG }}"
 
           # Skapa PR via GitHub CLI (installerar snabbt)
-          echo "${{ secrets.GH_PAT }}" | gh auth login --with-token
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
           gh repo set-default ${{ env.GITOPS_REPO }}
           gh pr create --base main --head "$BR" \
             --title "chore(gitops): DEV → ${{ steps.meta.outputs.DEV_TAG }}" \
             --body "Automatiskt PR: uppdaterar \`${{ env.DEV_VALUES }}\` till \`${{ steps.meta.outputs.DEV_TAG }}\`."
         env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
