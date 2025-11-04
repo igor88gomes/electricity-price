@@ -1,0 +1,49 @@
+name: Promote to STAGING (GitOps PR)
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Kort commit SHA (7 tecken) att promota"
+        required: true
+        type: string
+
+env:
+  IMAGE_REPO: ghcr.io/igor88gomes/electricity-price
+  GITOPS_REPO: igor88gomes/electricity-price-gitops
+  STAGING_VALUES: environments/staging/values.yaml
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compute STAGING tag
+        id: meta
+        run: echo "STG_TAG=staging-${{ inputs.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Create PR in GitOps repo (update STAGING tag)
+        run: |
+          git config --global user.name  "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.GITOPS_REPO }} gitops
+          cd gitops
+
+          sed -i "s|^  tag: .*|  tag: ${{ steps.meta.outputs.STG_TAG }}|" ${{ env.STAGING_VALUES }}
+
+          BR=chore/staging-image-${{ steps.meta.outputs.STG_TAG }}
+          git checkout -b "$BR"
+          git add ${{ env.STAGING_VALUES }}
+          git commit -m "chore(gitops): set STAGING image tag to ${{ steps.meta.outputs.STG_TAG }}"
+
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          gh repo set-default ${{ env.GITOPS_REPO }}
+          gh pr create --base main --head "$BR" \
+            --title "chore(gitops): STAGING → ${{ steps.meta.outputs.STG_TAG }}" \
+            --body "Promoverar DEV-bild till STAGING: \`${{ env.STAGING_VALUES }}\` → \`${{ steps.meta.outputs.STG_TAG }}\`."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

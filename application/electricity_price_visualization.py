@@ -19,11 +19,15 @@ def create_pandas_dataframe(elpris_data):
         tid och prisdata.
     """
     # Extrahera de första 24 timmarna av prisdata
-    current_prices = [(hour, price['SEK_per_kWh']) for hour, price in enumerate(elpris_data[:24])]
+    current_prices = [(hour, price["SEK_per_kWh"]) for hour, price in enumerate(elpris_data[:24])]
 
     # Skapa en Pandas DataFrame med två kolumner: tid och pris
-    df = pd.DataFrame({'Tidpunkt på dygnet i (hh:mm)': [f"{hour:02d}:00" for hour, _ in current_prices],
-                       'Motsvarande pris i (kr/kWh)': [price for _, price in current_prices]})
+    df = pd.DataFrame(
+        {
+            "Tidpunkt på dygnet i (hh:mm)": [f"{hour:02d}:00" for hour, _ in current_prices],
+            "Motsvarande pris i (kr/kWh)": [price for _, price in current_prices],
+        }
+    )
     return df
 
 
@@ -43,8 +47,9 @@ def create_pandas_table(current_prices):
         str: En HTML-tabell som en sträng.
     """
     # Konvertera Pandas DataFrame till en HTML-tabell med specificerad formatering
-    pandas_table = current_prices.to_html(classes="table table-bordered table-striped", justify='left', index=False,
-                                          escape=False)
+    pandas_table = current_prices.to_html(
+        classes="table table-bordered table-striped", justify="left", index=False, escape=False
+    )
     return pandas_table  # Returnera HTML-tabellen
 
 
@@ -70,17 +75,19 @@ def create_plotly_chart(current_prices, date, price_class):
     fig = go.Figure()
 
     # Lägg till en linjetrajekt till figuren med tid och prisdata
-    fig.add_trace(go.Scatter(
-        x=current_prices['Tidpunkt på dygnet i (hh:mm)'],
-        y=current_prices['Motsvarande pris i (kr/kWh)'],
-        mode='lines'
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=current_prices["Tidpunkt på dygnet i (hh:mm)"],
+            y=current_prices["Motsvarande pris i (kr/kWh)"],
+            mode="lines",
+        )
+    )
 
     # Ställ in diagramlayout med titel och axelrubriker
     fig.update_layout(
-        title=f'Datum: {date}<br>Prisklass: {price_class}',
-        xaxis_title='Tidpunkt på dygnet i (hh:mm)',
-        yaxis_title='Motsvarande pris i (kr/kWh)'
+        title=f"Datum: {date}<br>Prisklass: {price_class}",
+        xaxis_title="Tidpunkt på dygnet i (hh:mm)",
+        yaxis_title="Motsvarande pris i (kr/kWh)",
     )
 
     # Konvertera diagrammet till HTML och returnera det

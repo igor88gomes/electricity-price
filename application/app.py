@@ -1,13 +1,18 @@
-from flask import Flask, render_template, request, g, Response
-from application.electricity_price_data import fetch_and_process_elpris_data
-from application.date_utils import get_min_max_allowed_dates, get_default_form_field_values, validate_date
-from application.menu_options import menu_options
-from application.user_input import get_user_input
-from application.electricity_price_visualization import create_pandas_table, create_chart
-
 # --- Nya imports för mätning/observabilitet ---
 import time
-from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+
+from flask import Flask, Response, g, render_template, request
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
+
+from application.date_utils import (
+    get_default_form_field_values,
+    get_min_max_allowed_dates,
+    validate_date,
+)
+from application.electricity_price_data import fetch_and_process_elpris_data
+from application.electricity_price_visualization import create_chart, create_pandas_table
+from application.menu_options import menu_options
+from application.user_input import get_user_input
 
 app = Flask(__name__)
 
@@ -15,23 +20,17 @@ app = Flask(__name__)
 # Metrik för HTTP-trafik (Prometheus)
 # --------------------------------------------------------------------
 # Räkna antal HTTP-anrop per metod/endpoint/status
-HTTP_REQUESTS = Counter(
-    "app_http_requests_total",
-    "Totalt antal HTTP-anrop",
-    ["method", "endpoint", "http_status"]
-)
+HTTP_REQUESTS = Counter("app_http_requests_total", "Totalt antal HTTP-anrop", ["method", "endpoint", "http_status"])
 
 # Mäta latens per endpoint (i sekunder)
-HTTP_LATENCY = Histogram(
-    "app_request_latency_seconds",
-    "Latens för HTTP-anrop (sekunder)",
-    ["endpoint"]
-)
+HTTP_LATENCY = Histogram("app_request_latency_seconds", "Latens för HTTP-anrop (sekunder)", ["endpoint"])
+
 
 # Före varje request: starta en timer
 @app.before_request
 def _metrics_start_timer():
     g._start_time = time.time()
+
 
 # Efter varje request: registrera latens och öka räknare
 @app.after_request
@@ -40,11 +39,7 @@ def _metrics_record(response):
         elapsed = time.time() - getattr(g, "_start_time", time.time())
         endpoint = request.endpoint or "unknown"
         HTTP_LATENCY.labels(endpoint=endpoint).observe(elapsed)
-        HTTP_REQUESTS.labels(
-            method=request.method,
-            endpoint=endpoint,
-            http_status=response.status_code
-        ).inc()
+        HTTP_REQUESTS.labels(method=request.method, endpoint=endpoint, http_status=response.status_code).inc()
     except Exception:
         # Metrik får aldrig krascha applikationen
         pass
@@ -86,7 +81,7 @@ def metrics():
 
 
 # Route till startsidan
-@app.route('/')
+@app.route("/")
 def index():
     """
     Rendera startsidan.
@@ -104,11 +99,19 @@ def index():
     year, month, day, price_class = get_default_form_field_values()
 
     # Rendera index.html-mallen med data
-    return render_template('index.html', year=year, month=month, day=day, price_class=price_class,
-                           menu_options=menu_options, min_date=min_date, next_day=next_day)
+    return render_template(
+        "index.html",
+        year=year,
+        month=month,
+        day=day,
+        price_class=price_class,
+        menu_options=menu_options,
+        min_date=min_date,
+        next_day=next_day,
+    )
 
 
-@app.route('/calculate', methods=['POST'])
+@app.route("/calculate", methods=["POST"])
 def calculate_prices():
     """
     Beräkna elpriser.
@@ -135,14 +138,24 @@ def calculate_prices():
 
     # Hantera fallet när current_prices är None
     if current_prices is None:
-        return "Åtkomst till nästa dags elprisdata kommer att vara tillgänglig efter kl. 13:00.", 200
+        return (
+            "Åtkomst till nästa dags elprisdata kommer att vara tillgänglig efter kl. 13:00.",
+            200,
+        )
 
     pandas_table = create_pandas_table(current_prices)
     chart_html = create_chart(current_prices, date, price_class)
 
     # Rendera result.html-mallen med data
-    return render_template('result.html', date=date, price_class=price_class, current_prices=current_prices,
-                           error_message=None, pandas_table=pandas_table, chart_html=chart_html)
+    return render_template(
+        "result.html",
+        date=date,
+        price_class=price_class,
+        current_prices=current_prices,
+        error_message=None,
+        pandas_table=pandas_table,
+        chart_html=chart_html,
+    )
 
 
 # Felhanterare för 404 Not Found-fel
@@ -161,7 +174,7 @@ def handle_not_found_error(error):
 
 
 # Route för att utlösa ett internt fel
-@app.route('/trigger_internal_error', methods=['GET'])
+@app.route("/trigger_internal_error", methods=["GET"])
 def trigger_internal_error():
     """
     Utlösa ett internt fel.
