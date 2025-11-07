@@ -3,7 +3,7 @@ name: CD (build & publish DEV + GitOps Dispatch)
 on:
   push:
     branches:
-      - main     # Efter merge till main → bygg DEV-image
+      - main
   workflow_dispatch: {}
 
 env:
@@ -66,8 +66,6 @@ jobs:
           retention-days: 7
 
       - name: Dispatch dev-update event to GitOps
-        # Skickar repository_dispatch-händelsen till GitOps-repot,
-        # som uppdaterar DEV-values-filen med den nya taggen och digesten.
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.GH_PAT }}
@@ -79,8 +77,21 @@ jobs:
               "digest": "${{ steps.build.outputs.digest }}"
             }
 
+      - name: Dispatch promote-staging event to GitOps
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: igor88gomes/electricity-price-gitops
+          event-type: promote-staging
+          client-payload: >-
+            {
+              "sha": "${{ github.sha }}",
+              "tag": "${{ steps.meta.outputs.DEV_TAG }}",
+              "digest": "${{ steps.build.outputs.digest }}"
+            }
+
       - name: Info
         run: |
-          echo "Sent update-dev event to GitOps:"
+          echo "Sent update-dev and promote-staging events to GitOps:"
           echo "  Tag:    ${{ steps.meta.outputs.DEV_TAG }}"
           echo "  Digest: ${{ steps.build.outputs.digest }}"
