@@ -44,9 +44,6 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_REPO }}:${{ steps.meta.outputs.REL_TAG }}
-        # Exportar digest para o próximo passo
-        outputs:
-          digest: ${{ steps.build.outputs.digest }}
 
       - name: Dispatch release-prod event to GitOps
         uses: peter-evans/repository-dispatch@v3
