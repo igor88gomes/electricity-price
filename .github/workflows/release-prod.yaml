@@ -45,6 +45,25 @@ jobs:
           tags: |
             ${{ env.IMAGE_REPO }}:${{ steps.meta.outputs.REL_TAG }}
 
+      # Exponera och sammanfatta digest (for traceability)
+      - name: Expose image digest
+        run: |
+          echo "IMAGE_DIGEST=${{ steps.build.outputs.digest }}"
+          printf "%s" "${{ steps.build.outputs.digest }}" > image-digest.txt
+          {
+            echo "## PROD Build Summary"
+            echo ""
+            echo "- Version: \`${{ steps.meta.outputs.REL_TAG }}\`"
+            echo "- Digest:  \`${{ steps.build.outputs.digest }}\`"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload digest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-digest
+          path: image-digest.txt
+          retention-days: 7
+
       - name: Dispatch release-prod event to GitOps
         uses: peter-evans/repository-dispatch@v3
         with:
