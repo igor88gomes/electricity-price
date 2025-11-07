@@ -7,7 +7,7 @@
 [![Multi-arch](https://img.shields.io/badge/multi--arch-amd64%20%7C%20arm64-blue)](#)
 [![GHCR image](https://img.shields.io/badge/GHCR-image-blue)](https://github.com/users/igor88gomes/packages/container/package/electricity-price)
 
-# Elprisberäkning.se ⚡
+# Elprisberäkning.se
 
 En Flask-baserad webbapplikation där användaren kan söka efter elpriser i Sverige för ett valt datum.  
 Data hämtas från en extern API, bearbetas med Pandas för korrekt databehandling, och presenteras sedan i en tabell samt som interaktiva Plotly-diagram.
