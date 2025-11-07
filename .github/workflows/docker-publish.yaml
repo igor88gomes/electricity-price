@@ -1,4 +1,4 @@
-name: CD (build & publish DEV + GitOps PR)
+name: CD (build & publish DEV + GitOps Dispatch)
 
 on:
   push:
@@ -9,12 +9,11 @@ on:
 env:
   IMAGE_REPO: ghcr.io/igor88gomes/electricity-price
   GITOPS_REPO: igor88gomes/electricity-price-gitops
-  DEV_VALUES: environments/dev/values.yaml
 
 permissions:
-  contents: write          # Behövs för att skapa PR mot GitOps-repo via GITHUB_TOKEN när samma org
-  pull-requests: write
-  packages: write          # push till GHCR
+  contents: read
+  actions: write
+  packages: write
 
 jobs:
   build-publish:
@@ -39,6 +38,7 @@ jobs:
           echo "DEV_TAG=dev-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
       - name: Build & publish multi-arch (amd64, arm64)
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -47,33 +47,40 @@ jobs:
           tags: |
             ${{ env.IMAGE_REPO }}:${{ steps.meta.outputs.DEV_TAG }}
 
-      - name: Prepare GitOps commit (update DEV values)
+      - name: Expose image digest (for promotion/use later)
         run: |
-          git config --global user.name  "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          echo "IMAGE_DIGEST=${{ steps.build.outputs.digest }}"
+          printf "%s" "${{ steps.build.outputs.digest }}" > image-digest.txt
+          {
+            echo "## Build outputs"
+            echo ""
+            echo "- Tag: \`${{ steps.meta.outputs.DEV_TAG }}\`"
+            echo "- Digest: \`${{ steps.build.outputs.digest }}\`"
+          } >> $GITHUB_STEP_SUMMARY
 
-          # Klona GitOps-repot med PAT
-          git clone https://${{ secrets.GH_PAT }}@github.com/${{ env.GITOPS_REPO }} gitops
-          cd gitops
+      - name: Upload digest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-digest
+          path: image-digest.txt
+          retention-days: 7
 
-          # Basera branch på origin/main så PR har diff
-          git fetch origin main
-          BR=chore/dev-image-${{ steps.meta.outputs.DEV_TAG }}
-          git checkout -b "$BR" origin/main
+      - name: Dispatch dev-update event to GitOps
+        # Skickar repository_dispatch-händelsen till GitOps-repot,
+        # som uppdaterar DEV-values-filen med den nya taggen och digesten.
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: igor88gomes/electricity-price-gitops
+          event-type: update-dev
+          client-payload: >-
+            {
+              "tag": "${{ steps.meta.outputs.DEV_TAG }}",
+              "digest": "${{ steps.build.outputs.digest }}"
+            }
 
-          # Uppdatera endast image.tag-raden i DEV values.yaml
-          sed -i "s|^  tag: .*|  tag: ${{ steps.meta.outputs.DEV_TAG }}|" ${{ env.DEV_VALUES }}
-
-          git add ${{ env.DEV_VALUES }}
-          git commit -m "chore(gitops): set DEV image tag to ${{ steps.meta.outputs.DEV_TAG }}"
-          git push -u origin "$BR"
-
-          # Skapa PR med explicit repo/branch
-          gh pr create \
-            --repo ${{ env.GITOPS_REPO }} \
-            --base main \
-            --head "$BR" \
-            --title "chore(gitops): DEV → ${{ steps.meta.outputs.DEV_TAG }}" \
-            --body "Automatiskt PR: uppdaterar \`${{ env.DEV_VALUES }}\` till \`${{ steps.meta.outputs.DEV_TAG }}\`."
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
+      - name: Info
+        run: |
+          echo "Sent update-dev event to GitOps:"
+          echo "  Tag:    ${{ steps.meta.outputs.DEV_TAG }}"
+          echo "  Digest: ${{ steps.build.outputs.digest }}"

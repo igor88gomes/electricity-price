@@ -14,7 +14,7 @@ Data hämtas från en extern API, bearbetas med Pandas för korrekt databehandli
 
 ---
 
-## ✨ Funktioner
+## Funktioner
 
 - Formulär för att välja datum
 - Hämtar elprisdata automatiskt via API
@@ -26,7 +26,7 @@ Data hämtas från en extern API, bearbetas med Pandas för korrekt databehandli
 
 ---
 
-## 🛠️ Teknikstack
+## Teknikstack
 
 | Komponent         |            Version / Info             |
 |-------------------|---------------------------------------|
@@ -42,7 +42,7 @@ Se `requirements.txt` för full lista av beroenden.
 
 ---
 
-## 🚀 Installation & Körning (lokalt)
+## Installation & Körning (lokalt)
 
 ### 1️⃣ Skapa virtuell miljö
 
@@ -83,7 +83,7 @@ python -m application.app
 
 ---
 
-## ✅ Testning
+## Testning
 
 För att köra alla tester:
 
@@ -93,7 +93,7 @@ pytest -q
 
 ---
 
-## 🔍 Viktiga endpoints
+## Viktiga endpoints
 
 | Endpoint   | Funktion             |
 |------------|----------------------|
@@ -105,7 +105,7 @@ pytest -q
 
 ---
 
-## 🗂️ Projektstruktur
+## Projektstruktur
 
 ```
 application/
@@ -125,7 +125,7 @@ README.md
 
 ---
 
-## 👤 Kontakt
+## Kontakt
 
 Igor Gomes — DevOps Engineer  
 [LinkedIn](https://www.linkedin.com/in/igor-gomes-5b6184290) 
