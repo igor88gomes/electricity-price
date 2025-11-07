@@ -1,4 +1,4 @@
-name: Promote to STAGING (GitOps PR)
+name: Promote to STAGING (GitOps Dispatch)
 
 on:
   workflow_dispatch:
@@ -7,15 +7,18 @@ on:
         description: "Kort commit SHA (7 tecken) att promota"
         required: true
         type: string
+      digest:
+        description: "Optional: manifest-digest (sha256:...) från DEV"
+        required: false
+        type: string
 
 env:
   IMAGE_REPO: ghcr.io/igor88gomes/electricity-price
   GITOPS_REPO: igor88gomes/electricity-price-gitops
-  STAGING_VALUES: environments/staging/values.yaml
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  actions: write
 
 jobs:
   promote:
@@ -25,25 +28,30 @@ jobs:
         id: meta
         run: echo "STG_TAG=staging-${{ inputs.sha }}" >> $GITHUB_OUTPUT
 
-      - name: Create PR in GitOps repo (update STAGING tag)
+      - name: Validate digest input
+        id: validate
+        shell: bash
         run: |
-          git config --global user.name  "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if [[ -n "${{ inputs.digest }}" && "${{ inputs.digest }}" != sha256:* ]]; then
+            echo "ERROR: digest must start with sha256:"; exit 1
+          fi
 
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.GITOPS_REPO }} gitops
-          cd gitops
+      - name: Dispatch to GitOps repo
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: igor88gomes/electricity-price-gitops
+          event-type: promote-staging
+          client-payload: >-
+            {
+              "digest": "${{ inputs.digest }}",
+              "sha": "${{ inputs.sha }}",
+              "tag": "${{ steps.meta.outputs.STG_TAG }}"
+            }
 
-          sed -i "s|^  tag: .*|  tag: ${{ steps.meta.outputs.STG_TAG }}|" ${{ env.STAGING_VALUES }}
-
-          BR=chore/staging-image-${{ steps.meta.outputs.STG_TAG }}
-          git checkout -b "$BR"
-          git add ${{ env.STAGING_VALUES }}
-          git commit -m "chore(gitops): set STAGING image tag to ${{ steps.meta.outputs.STG_TAG }}"
-
-          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-          gh repo set-default ${{ env.GITOPS_REPO }}
-          gh pr create --base main --head "$BR" \
-            --title "chore(gitops): STAGING → ${{ steps.meta.outputs.STG_TAG }}" \
-            --body "Promoverar DEV-bild till STAGING: \`${{ env.STAGING_VALUES }}\` → \`${{ steps.meta.outputs.STG_TAG }}\`."
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Info
+        run: |
+          echo "Sent promote-staging event to GitOps:"
+          echo "  SHA:     ${{ inputs.sha }}"
+          echo "  DIGEST:  ${{ inputs.digest }}"
+          echo "  TAG:     ${{ steps.meta.outputs.STG_TAG }}"

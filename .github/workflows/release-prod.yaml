@@ -1,4 +1,4 @@
-name: Release PROD (SemVer + GitOps PR)
+name: Release PROD (SemVer + GitOps Dispatch)
 
 on:
   push:
@@ -8,11 +8,10 @@ on:
 env:
   IMAGE_REPO: ghcr.io/igor88gomes/electricity-price
   GITOPS_REPO: igor88gomes/electricity-price-gitops
-  PROD_VALUES: environments/prod/values.yaml
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  actions: write
   packages: write
 
 jobs:
@@ -37,6 +36,7 @@ jobs:
         run: echo "REL_TAG=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
 
       - name: Build & publish multi-arch (amd64, arm64)
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -44,26 +44,24 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_REPO }}:${{ steps.meta.outputs.REL_TAG }}
+        # Exportar digest para o próximo passo
+        outputs:
+          digest: ${{ steps.build.outputs.digest }}
 
-      - name: PR to GitOps (update PROD values)
+      - name: Dispatch release-prod event to GitOps
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: igor88gomes/electricity-price-gitops
+          event-type: release-prod
+          client-payload: >-
+            {
+              "version": "${{ steps.meta.outputs.REL_TAG }}",
+              "digest": "${{ steps.build.outputs.digest }}"
+            }
+
+      - name: Info
         run: |
-          git config --global user.name  "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ env.GITOPS_REPO }} gitops
-          cd gitops
-
-          sed -i "s|^  tag: .*|  tag: ${{ steps.meta.outputs.REL_TAG }}|" ${{ env.PROD_VALUES }}
-
-          BR=release/prod-${{ steps.meta.outputs.REL_TAG }}
-          git checkout -b "$BR"
-          git add ${{ env.PROD_VALUES }}
-          git commit -m "release(gitops): prod -> ${{ steps.meta.outputs.REL_TAG }}"
-
-          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-          gh repo set-default ${{ env.GITOPS_REPO }}
-          gh pr create --base main --head "$BR" \
-            --title "release(gitops): PROD → ${{ steps.meta.outputs.REL_TAG }}" \
-            --body "Uppdaterar \`${{ env.PROD_VALUES }}\` till **${{ steps.meta.outputs.REL_TAG }}** (SemVer-release)."
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          echo "Sent release-prod event to GitOps:"
+          echo "  Version: ${{ steps.meta.outputs.REL_TAG }}"
+          echo "  Digest:  ${{ steps.build.outputs.digest }}"
