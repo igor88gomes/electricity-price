@@ -1,10 +1,12 @@
 name: CI (lint, tester, coverage)
 
 on:
-  pull_request:
   push:
-    branches-ignore:
-      - main  # CI i feature/PR. (Publish sker i andra workflows)
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
