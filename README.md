@@ -122,7 +122,7 @@ electricity-price/
 ├── pytest.ini              # Pytest-konfiguration (plugins, options)
 ├── requirements.txt        # Python-beroenden för app + tester
 └── README.md               # Projektöversikt, användning och arkitektur
----
+```
 
 ---
 
