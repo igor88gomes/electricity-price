@@ -9,7 +9,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   ci:
@@ -38,6 +38,22 @@ jobs:
       - name: Run Pytest with coverage (XML)
         run: |
           pytest -q --cov=application --cov-report=xml
+
+      - name: Install coverage-badge tool
+        run: pip install coverage-badge
+
+      - name: Generate coverage badge SVG
+        run: |
+          mkdir -p .github/badges
+          coverage-badge -o .github/badges/coverage.svg -f
+
+      - name: Commit coverage badge on main
+        if: github.ref == 'refs/heads/main'
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: ".github/badges/coverage.svg"
+          message: "chore(ci): update coverage badge"
+          default_author: github_actions
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
