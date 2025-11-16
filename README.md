@@ -2,7 +2,7 @@
 [![Coverage](https://github.com/igor88gomes/electricity-price/raw/main/.github/badges/coverage.svg)](https://github.com/igor88gomes/electricity-price/actions/workflows/ci.yaml)
 [![Secret Scan](https://github.com/igor88gomes/electricity-price/actions/workflows/secret-scan.yaml/badge.svg?branch=main)](https://github.com/igor88gomes/electricity-price/actions/workflows/secret-scan.yaml)
 [![CD – DEV](https://github.com/igor88gomes/electricity-price/actions/workflows/docker-publish.yaml/badge.svg?branch=main)](https://github.com/igor88gomes/electricity-price/actions/workflows/docker-publish.yaml)
-[![Promote STAGING](https://github.com/igor88gomes/electricity-price/actions/workflows/promote-staging.yaml/badge.svg)](https://github.com/igor88gomes/electricity-price/actions/workflows/promote-staging.yaml)
+[![Promote STAGING](https://github.com/igor88gomes/electricity-price/actions/workflows/promote-staging.yaml/badge.svg?branch=main)](...)
 [![Release PROD](https://github.com/igor88gomes/electricity-price/actions/workflows/release-prod.yaml/badge.svg)](https://github.com/igor88gomes/electricity-price/actions/workflows/release-prod.yaml)
 [![Multi-arch](https://img.shields.io/badge/multi--arch-amd64%20%7C%20arm64-blue)](#)
 [![GHCR image](https://img.shields.io/badge/GHCR-image-blue)](https://github.com/users/igor88gomes/packages/container/package/electricity-price)
@@ -129,7 +129,8 @@ electricity-price/
 ## Kontakt
 
 Igor Gomes — DevOps Engineer  
-[LinkedIn](https://www.linkedin.com/in/igor-gomes-5b6184290) 
+
 **E-post:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com)
+[LinkedIn](https://www.linkedin.com/in/igor-gomes-5b6184290) 
 
 ---
