@@ -4,12 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       sha:
-        description: "Kort commit SHA (7 tecken) att promota"
+        description: "Short commit SHA (7 characters) to promote"
         required: true
-        type: string
-      digest:
-        description: "Optional: manifest-digest (sha256:...) från DEV"
-        required: false
         type: string
 
 env:
@@ -28,13 +24,25 @@ jobs:
         id: meta
         run: echo "STG_TAG=staging-${{ inputs.sha }}" >> $GITHUB_OUTPUT
 
-      - name: Validate digest input
-        id: validate
+      - name: Resolve digest from DEV image
+        id: digest
         shell: bash
         run: |
-          if [[ -n "${{ inputs.digest }}" && "${{ inputs.digest }}" != sha256:* ]]; then
-            echo "ERROR: digest must start with sha256:"; exit 1
+          DEV_TAG="dev-${{ inputs.sha }}"
+          echo "Using DEV_TAG=${DEV_TAG}"
+
+          # Hämta DEV-imagen som redan byggts av CD-flödet
+          docker pull "${IMAGE_REPO}:${DEV_TAG}"
+
+          # Plocka ut manifest-digest (sha256:...)
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "${IMAGE_REPO}:${DEV_TAG}" | cut -d'@' -f2)
+          if [[ -z "${DIGEST}" ]]; then
+            echo "ERROR: could not retrieve digest for ${IMAGE_REPO}:${DEV_TAG}"
+            exit 1
           fi
+
+          echo "Resolved digest: ${DIGEST}"
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
 
       - name: Dispatch to GitOps repo
         uses: peter-evans/repository-dispatch@v3
@@ -44,7 +52,7 @@ jobs:
           event-type: promote-staging
           client-payload: >-
             {
-              "digest": "${{ inputs.digest }}",
+              "digest": "${{ steps.digest.outputs.digest }}",
               "sha": "${{ inputs.sha }}",
               "tag": "${{ steps.meta.outputs.STG_TAG }}"
             }
@@ -53,5 +61,5 @@ jobs:
         run: |
           echo "Sent promote-staging event to GitOps:"
           echo "  SHA:     ${{ inputs.sha }}"
-          echo "  DIGEST:  ${{ inputs.digest }}"
+          echo "  DIGEST:  ${{ steps.digest.outputs.digest }}"
           echo "  TAG:     ${{ steps.meta.outputs.STG_TAG }}"
