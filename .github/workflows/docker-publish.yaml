@@ -66,12 +66,14 @@ jobs:
           path: image-digest.txt
           retention-days: 7
 
-      # --- Security: Trivy image scan + SARIF + SBOM (ny funktionalitet) ---
+      # Security: Trivy image scan + SARIF + SBOM
 
       - name: Trivy image scan (CRITICAL only, blocking)
         # Skanna den byggda DEV-imagen efter kritiska sårbarheter innan GitOps-promotion
         uses: aquasecurity/trivy-action@0.33.1
         with:
+          # Använd senaste stabila Trivy-versionen (undviker borttagen tag v0.65.0)
+          version: 'latest'
           image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
           vuln-type: 'os,library'
           severity: 'CRITICAL'
@@ -83,6 +85,8 @@ jobs:
         # Generera SARIF-rapport för GitHub Code Scanning (HIGH+CRITICAL)
         uses: aquasecurity/trivy-action@0.33.1
         with:
+          # Trivy är redan installerad i föregående steg
+          skip-setup-trivy: true
           image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
           vuln-type: 'os,library'
           severity: 'HIGH,CRITICAL'
@@ -108,6 +112,8 @@ jobs:
         continue-on-error: true
         uses: aquasecurity/trivy-action@0.33.1
         with:
+          # Återanvänd installerad Trivy, bara generera SBOM
+          skip-setup-trivy: true
           image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
           format: 'cyclonedx'
           output: 'sbom/sbom.cdx.json'
@@ -136,7 +142,7 @@ jobs:
           path: sbom/sbom.cdx.json
           retention-days: 14
 
-      # --- Slut på security-del; resten av flödet (GitOps) är oförändrat ---
+      # Slut på security-del. Resten av flödet (GitOps)
 
       - name: Dispatch dev-update event to GitOps
         uses: peter-evans/repository-dispatch@v3
