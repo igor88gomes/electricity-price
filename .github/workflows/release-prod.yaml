@@ -48,21 +48,22 @@ jobs:
           echo "Using DEV_TAG=${DEV_TAG}"
           echo "Using REL_TAG=${REL_TAG}"
 
-          # Hämta DEV-imagen som redan byggts av CD-flödet
-          docker pull "${IMAGE_REPO}:${DEV_TAG}"
+          # Skapa en PROD-tag (SemVer) som pekar på EXAKT samma manifest som DEV-taggen.
+          # Detta återanvänder multi-arch-manifestet från build-steget (ingen rebuild, inget nytt digest).
+          docker buildx imagetools create \
+            --tag "${IMAGE_REPO}:${REL_TAG}" \
+            "${IMAGE_REPO}:${DEV_TAG}"
 
-          # Tagga om samma image till release-taggen (SemVer)
-          docker tag "${IMAGE_REPO}:${DEV_TAG}" "${IMAGE_REPO}:${REL_TAG}"
-          docker push "${IMAGE_REPO}:${REL_TAG}"
+          # Hämta manifest-digest (sha256:...) för release-taggen.
+          # Samma manifest som DEV-taggen => samma digest som i DEV/STAGING.
+          DIGEST=$(docker buildx imagetools inspect "${IMAGE_REPO}:${REL_TAG}" | sed -n 's/^Digest: //p' | head -n1)
 
-          # Plocka ut manifest-digest (sha256:...)
-          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "${IMAGE_REPO}:${REL_TAG}" | cut -d'@' -f2)
           if [[ -z "${DIGEST}" ]]; then
-            echo "ERROR: could not retrieve digest for ${IMAGE_REPO}:${REL_TAG}"
+            echo "ERROR: could not retrieve manifest digest for ${IMAGE_REPO}:${REL_TAG}"
             exit 1
           fi
 
-          echo "Resolved digest: ${DIGEST}"
+          echo "Resolved manifest digest (same as DEV/STAGING): ${DIGEST}"
           echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
 
       # Exponera och sammanfatta digest (for traceability)
