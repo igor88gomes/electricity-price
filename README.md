@@ -11,8 +11,11 @@
 
 # Elprisberäkning.se
 
-En Flask-baserad webbapplikation där användaren kan söka efter elpriser i Sverige för ett valt datum.  
-Data hämtas från en extern API, bearbetas med Pandas för korrekt databehandling, och presenteras sedan i en tabell samt som interaktiva Plotly-diagram.
+En Flask-baserad webbapplikation där användaren kan söka efter elpriser i Sverige för ett valt datum. Data hämtas från en extern API, bearbetas med Pandas för korrekt databehandling, och presenteras sedan i en tabell samt som interaktiva Plotly-diagram.
+
+## Frontend – HTML, Jinja2 och Bootstrap
+
+Applikationens frontend använder **Jinja2‑templates** och **Bootstrap 5** för en enkel och responsiv UI‑upplevelse ovanpå den API‑drivna logiken.
 
 ---
 
@@ -80,7 +83,8 @@ flask run
 python -m application.app
 ```
 
-Öppna sedan i webbläsaren:  
+### 4️⃣ Öppna sedan i webbläsaren:  
+
 👉 http://localhost:5000/
 
 ---
@@ -105,6 +109,16 @@ pytest -q
 | `/readyz`  | Readiness-check      |
 | `/metrics` | Prometheus-metrik    |
 
+## CI/CD-pipelines (Build → PR till GitOps → Deployment)
+
+Applikationen använder ett komplett GitOps-flöde över tre miljöer (DEV, STAGING, PROD).
+Alla miljöer drivs av automatiska PR:er och alla pipelines återanvänder samma multi-arch manifest-digest som byggs i DEV.
+
+### ● Secret Scan – Gitleaks (`secret-scan.yaml`)
+### ● CI – Testning (`ci.yaml`)
+### ● CD till DEV – bygger multi-arch och öppnar PR
+### ● Promote STAGING – återanvänder exakt samma digest som DEV
+### ● Release PROD – retaggar samma manifest (ingen rebuild)
 
 ## Projektstruktur
 
