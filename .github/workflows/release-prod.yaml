@@ -35,15 +35,35 @@ jobs:
         id: meta
         run: echo "REL_TAG=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
 
-      - name: Build & publish multi-arch (amd64, arm64)
+      # PROD återanvänd den redan byggda DEV-imagen (dev-<kort SHA>), taggas om
+      # till SemVer-taggen och dess digest skickas vidare.
+      - name: Reuse DEV image and resolve PROD digest
         id: build
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ${{ env.IMAGE_REPO }}:${{ steps.meta.outputs.REL_TAG }}
+        shell: bash
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          DEV_TAG="dev-${SHORT_SHA}"
+          REL_TAG="${{ steps.meta.outputs.REL_TAG }}"
+
+          echo "Using DEV_TAG=${DEV_TAG}"
+          echo "Using REL_TAG=${REL_TAG}"
+
+          # Hämta DEV-imagen som redan byggts av CD-flödet
+          docker pull "${IMAGE_REPO}:${DEV_TAG}"
+
+          # Tagga om samma image till release-taggen (SemVer)
+          docker tag "${IMAGE_REPO}:${DEV_TAG}" "${IMAGE_REPO}:${REL_TAG}"
+          docker push "${IMAGE_REPO}:${REL_TAG}"
+
+          # Plocka ut manifest-digest (sha256:...)
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "${IMAGE_REPO}:${REL_TAG}" | cut -d'@' -f2)
+          if [[ -z "${DIGEST}" ]]; then
+            echo "ERROR: could not retrieve digest for ${IMAGE_REPO}:${REL_TAG}"
+            exit 1
+          fi
+
+          echo "Resolved digest: ${DIGEST}"
+          echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
 
       # Exponera och sammanfatta digest (for traceability)
       - name: Expose image digest
