@@ -1,5 +1,4 @@
-﻿# Basbild: Python 3.12 i en minimal Debian-variant
-FROM python:3.12-slim
+﻿FROM python:3.12-slim
 
 # Miljövariabler för att undvika .pyc-filer och få omedelbar loggning i stdout
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -11,9 +10,12 @@ RUN adduser --disabled-password --gecos "" appuser
 # Arbetskatalog inne i containern
 WORKDIR /app
 
-# Kopiera Python-beroenden och installera dem (cachar inte hjul för att hålla bilden liten)
+# Kopiera Python-beroenden
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && \
+
+# Uppdatera pip till en säker version och installera beroenden
+RUN python -m pip install --upgrade "pip>=25.3" --no-cache-dir && \
+    pip install --no-cache-dir -r requirements.txt && \
     pip install --no-cache-dir gunicorn
 
 # Kopiera applikationskoden (inkl. templates/static) till containern
