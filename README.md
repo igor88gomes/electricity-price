@@ -1,3 +1,4 @@
+[![Version](https://img.shields.io/github/v/tag/igor88gomes/electricity-price?label=version&sort=semver)](https://github.com/igor88gomes/electricity-price/tags)
 [![CI – main](https://github.com/igor88gomes/electricity-price/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/igor88gomes/electricity-price/actions/workflows/ci.yaml)
 [![Coverage](https://github.com/igor88gomes/electricity-price/raw/main/.github/badges/coverage.svg)](https://github.com/igor88gomes/electricity-price/actions/workflows/ci.yaml)
 [![Secret Scan](https://github.com/igor88gomes/electricity-price/actions/workflows/secret-scan.yaml/badge.svg?branch=main)](https://github.com/igor88gomes/electricity-price/actions/workflows/secret-scan.yaml)
@@ -6,6 +7,9 @@
 [![Release PROD](https://github.com/igor88gomes/electricity-price/actions/workflows/release-prod.yaml/badge.svg)](https://github.com/igor88gomes/electricity-price/actions/workflows/release-prod.yaml)
 [![Multi-arch](https://img.shields.io/badge/multi--arch-amd64%20%7C%20arm64-blue)](#)
 [![GHCR image](https://img.shields.io/badge/GHCR-image-blue)](https://github.com/users/igor88gomes/packages/container/package/electricity-price)
+![SBOM](https://img.shields.io/badge/SBOM-CycloneDX-enabled-blue)
+![Trivy](https://img.shields.io/badge/Trivy-image%20scan-red)
+![Security](https://img.shields.io/badge/GitHub-Code%20Scanning-SARIF-success)
 
 > Av Igor Gomes — DevOps Engineer
 
@@ -114,9 +118,9 @@ pytest -q
 Applikationen använder ett komplett GitOps-flöde över tre miljöer (DEV, STAGING, PROD).
 Alla miljöer drivs av automatiska PR:er och alla pipelines återanvänder samma multi-arch manifest-digest som byggs i DEV.
 
-### ● Secret Scan – Gitleaks (`secret-scan.yaml`)
-### ● CI – Testning (`ci.yaml`)
-### ● CD till DEV – bygger multi-arch och öppnar PR
+### ● Secret Scan – Gitleaks 
+### ● CI – Testning 
+### ● CD till DEV – bygger multi-arch, kör SBOM-generering, Trivy image scan och publicerar manifest-digest innan PR öppnas
 ### ● Promote STAGING – återanvänder exakt samma digest som DEV
 ### ● Release PROD – retaggar samma manifest (ingen rebuild)
 
