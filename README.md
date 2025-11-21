@@ -148,5 +148,3 @@ Igor Gomes — DevOps Engineer
 
 **E-post:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com)
 [LinkedIn](https://www.linkedin.com/in/igor-gomes-5b6184290) 
-
----
