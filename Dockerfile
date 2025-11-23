@@ -4,8 +4,8 @@
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# Skapa en icke-root användare för bättre säkerhet
-RUN adduser --disabled-password --gecos "" appuser
+# Skapa en icke-root användare med fast UID (1000) för bättre säkerhet
+RUN adduser --disabled-password --gecos "" --uid 1000 appuser
 
 # Arbetskatalog inne i containern
 WORKDIR /app
@@ -21,6 +21,9 @@ RUN python -m pip install --upgrade "pip>=25.3" --no-cache-dir && \
 # Kopiera applikationskoden (inkl. templates/static) till containern
 # Strukturen förväntas vara: /app/application/...
 COPY application ./application
+
+# Säkerställ att appuser äger katalogen /app
+RUN chown -R appuser:appuser /app
 
 # Standardport och Gunicorn-flaggar (enkla värden för demo/prod-lik miljö)
 ENV PORT=8000 \
