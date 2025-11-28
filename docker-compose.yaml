@@ -1,14 +1,9 @@
 version: "3.9"
-
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: electricity-price-app
-    ports:
+    app:
+      image: ghcr.io/igor88gomes/electricity-price:latest  
+      container_name: electricity-price-app
+      ports:
       - "38080:5000"
-    environment:
-      - FLASK_ENV=production
-      - PYTHONUNBUFFERED=1
-    restart: unless-stopped
+      restart: unless-stopped
