@@ -1,7 +1,0 @@
-services:
-  app:
-    image: ghcr.io/igor88gomes/electricity-price:latest  # ou a tag que seu pipeline gera
-    container_name: electricity-price-app
-    ports:
-      - "39080:8000"
-    restart: unless-stopped
