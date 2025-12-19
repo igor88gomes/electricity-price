@@ -3,13 +3,15 @@
 [![Coverage](https://github.com/igor88gomes/electricity-price/raw/main/.github/badges/coverage.svg)](https://github.com/igor88gomes/electricity-price/actions/workflows/ci.yaml)
 [![Secret Scan](https://github.com/igor88gomes/electricity-price/actions/workflows/secret-scan.yaml/badge.svg?branch=main)](https://github.com/igor88gomes/electricity-price/actions/workflows/secret-scan.yaml)
 [![CD – DEV](https://github.com/igor88gomes/electricity-price/actions/workflows/docker-publish.yaml/badge.svg?branch=main)](https://github.com/igor88gomes/electricity-price/actions/workflows/docker-publish.yaml)
-[![Promote STAGING](https://github.com/igor88gomes/electricity-price/actions/workflows/promote-staging.yaml/badge.svg?branch=main)](...)
+[![Promote STAGING](https://github.com/igor88gomes/electricity-price/actions/workflows/promote-staging.yaml/badge.svg?branch=main)](https://github.com/igor88gomes/electricity-price/actions/workflows/promote-staging.yaml)
 [![Release PROD](https://github.com/igor88gomes/electricity-price/actions/workflows/release-prod.yaml/badge.svg)](https://github.com/igor88gomes/electricity-price/actions/workflows/release-prod.yaml)
 [![Multi-arch](https://img.shields.io/badge/multi--arch-amd64%20%7C%20arm64-blue)](#)
 [![GHCR image](https://img.shields.io/badge/GHCR-image-blue)](https://github.com/users/igor88gomes/packages/container/package/electricity-price)
 ![Trivy](https://img.shields.io/badge/Trivy-image%20scan-red)
 
-> Av Igor Gomes — DevOps Engineer
+> Av Igor Gomes
+
+> Denna applikation ingår i ett större projekt med GitOps-baserad leverans (DEV/STAGING/PROD) via ett separat GitOps-repository.
 
 # Elprisberäkning.se
 
@@ -55,7 +57,8 @@ Se `requirements.txt` för full lista av beroenden.
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # macOS/Linux
+# macOS/Linux
+source .venv/bin/activate  
 
 # eller på Windows (PowerShell)
 python -m venv .venv
@@ -78,9 +81,6 @@ pip install -r requirements.txt
 ### 3️⃣ Starta applikationen
 
 ```bash
-flask run
-
-# eller
 
 python -m application.app
 ```
@@ -103,13 +103,13 @@ pytest -q
 
 ## Viktiga endpoints
 
-| Endpoint   | Funktion             |
-|------------|----------------------|
-| `/`        | Startvy med formulär |
-| `/results` | Visar elprisdata     |
-| `/healthz` | Liveness-check       |
-| `/readyz`  | Readiness-check      |
-| `/metrics` | Prometheus-metrik    |
+| Endpoint     | Funktion                             |
+|--------------|--------------------------------------|
+| `/`          | Startvy med formulär                 |
+| `/calculate` | Beräknar och visar elprisdata (POST) |
+| `/healthz`   | Liveness-check                       |
+| `/readyz`    | Readiness-check                      |
+| `/metrics`   | Prometheus-metrik                    |
 
 ## CI/CD-pipelines (Build → PR till GitOps → Deployment)
 
@@ -121,6 +121,9 @@ Alla miljöer drivs av automatiska PR:er och alla pipelines återanvänder samma
 ### ● CD till DEV – bygger multi-arch, kör SBOM-generering, Trivy image scan och publicerar manifest-digest innan PR öppnas
 ### ● Promote STAGING – återanvänder exakt samma digest som DEV
 ### ● Release PROD – retaggar samma manifest (ingen rebuild)
+
+**GitOps-repo (DEV/STAGING/PROD):** https://github.com/igor88gomes/electricity-price-gitops
+
 
 ## Projektstruktur
 
