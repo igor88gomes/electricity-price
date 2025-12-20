@@ -11,7 +11,9 @@
 
 > Av Igor Gomes
 
-> Del av en GitOps-baserad leveranslösning (DEV/STAGING/PROD) med separat GitOps-repository.
+> Detta repository innehåller applikationslagret och är en del av en GitOps-baserad leveranslösning (DEV/STAGING/PROD) med separat GitOps-repository.
+
+> **Obs (säkerhet):** Automatiska säkerhetsskanningar (Trivy, Gitleaks) körs kontinuerligt i CI/CD-pipelinen, och findings kring beroenden och container image kan förekomma.
 
 ## TL;DR
 
