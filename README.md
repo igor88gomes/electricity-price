@@ -23,6 +23,7 @@
   
 **Begränsningar:** Beroende av extern API och dess publiceringstider; begränsat datumintervall. Ingen autentisering eller caching (avsiktligt utanför scope).
 
+
 # Elprisberäkning.se
 
 Den Flask-baserade webbapplikationen låter användaren söka efter elpriser för olika delar av Sverige för ett valt datum. Applikationen visar timvisa elpriser (00:00–23:00). Data hämtas från en extern API, bearbetas med Pandas och presenteras i tabellform samt som interaktiva Plotly-diagram.
@@ -136,7 +137,7 @@ python -m application.app
 
 #### 4️⃣ Öppna sedan i webbläsaren:  
 
-👉 http://localhost:5000/
+http://localhost:5000/
 
 ---
 
@@ -192,6 +193,7 @@ electricity-price/
 ├── .gitignore              # Ignorerade filer (virtuell miljö, cache, rapporter, etc.)
 ├── .gitleaks.toml          # Regler för secret scanning (Gitleaks)
 ├── .ruff.toml              # Konfiguration för Ruff (lint och format)
+├── docker-compose.yaml     # Lokal körning med Docker Compose
 ├── Dockerfile              # Bygger Docker-image för Flask-applikationen
 ├── pytest.ini              # Pytest-konfiguration (plugins, options)
 ├── requirements.txt        # Python-beroenden för app + tester
