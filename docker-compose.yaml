@@ -1,9 +1,8 @@
-version: "3.9"
 services:
   app:
-    app:
-      image: ghcr.io/igor88gomes/electricity-price:latest  
-      container_name: electricity-price-app
-      ports:
-      - "38080:5000"
-      restart: unless-stopped
+    build: .
+    image: electricity-price:local
+    container_name: electricity-price-app
+    ports:
+      - "38080:8000"
+    restart: unless-stopped
