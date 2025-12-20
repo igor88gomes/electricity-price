@@ -11,11 +11,22 @@
 
 > Av Igor Gomes
 
-> Denna applikation ingår i ett större projekt med GitOps-baserad leverans (DEV/STAGING/PROD) via ett separat GitOps-repository.
+> Del av en GitOps-baserad leveranslösning (DEV/STAGING/PROD) med separat GitOps-repository.
+
+## TL;DR
+
+**Vad:** Flask-baserad webbapplikation som visar elpriser för olika delar av Sverige per datum (tabell + diagram), baserat på extern realtids-API.  
+
+**Varför:** Byggd för att demonstrera produktionsnära DevOps- och plattformspraktiker kring en enkel applikation.  
+
+**Värde:** Stateless design utan databas som ger en lättviktig applikation med enkel drift, säkra deployer och horisontell skalning. CI med tester/coverage, secret scanning och container image build; leverans sker via GitOps-promotion DEV/STAGING/PROD med immutable image-digest.
+  
+**Begränsningar:** Beroende av extern API och dess publiceringstider; begränsat datumintervall. Ingen autentisering eller caching (avsiktligt utanför scope).
 
 # Elprisberäkning.se
 
-En Flask-baserad webbapplikation där användaren kan söka efter elpriser i Sverige för ett valt datum. Data hämtas från en extern API, bearbetas med Pandas för korrekt databehandling, och presenteras sedan i en tabell samt som interaktiva Plotly-diagram.
+Den Flask-baserade webbapplikationen låter användaren söka efter elpriser för olika delar av Sverige för ett valt datum. Applikationen visar timvisa elpriser (00:00–23:00). Data hämtas från en extern API, bearbetas med Pandas och presenteras i tabellform samt som interaktiva Plotly-diagram.
+
 
 ## Frontend – HTML, Jinja2 och Bootstrap
 
@@ -53,7 +64,46 @@ Se `requirements.txt` för full lista av beroenden.
 
 ## Installation & Körning (lokalt)
 
-### 1️⃣ Skapa virtuell miljö
+### Klona projektet
+
+```bash
+git clone https://github.com/igor88gomes/electricity-price.git
+cd electricity-price
+```
+
+### Förutsättningar för containerbaserad körning
+
+Följande behöver vara installerat på systemet:
+
+- **Docker** med **Docker Compose**
+  *eller*
+- **Podman** med **Podman Compose**
+
+Instruktionerna nedan använder **Docker** som standard.  
+Vid användning av **Podman**, ersätt:
+- `docker` med `podman`
+- `docker compose` med `podman-compose`
+
+### Välj ett alternativ för att komma igång
+
+### Alternativ A: Kör med Docker Compose 
+
+#### 1️⃣ Bygg och starta applikationen med ett kommando
+
+```bash
+docker compose up --build -d 
+```
+
+#### 2️⃣ Öppna i webbläsaren:
+
+- Applikationen: http://localhost:38080/
+- Health check: http://localhost:38080/healthz
+
+> Första bygget kan ta några minuter (beroenden laddas ner). Efterföljande builds går snabbare tack vare cache.
+
+### Alternativ B: Kör applikationen lokalt med virtuell miljö (utan container)
+
+#### 1️⃣ Skapa virtuell miljö
 
 ```bash
 python -m venv .venv
@@ -67,8 +117,7 @@ python -m venv .venv
 > Tips: Om PowerShell klagar på skriptpolicy, kör:
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned och öppna ett nytt PowerShell-fönster.
 
-
-### 2️⃣ Installera beroenden
+#### 2️⃣ Installera beroenden
 
 ```bash
 python -m pip install --upgrade pip
@@ -78,20 +127,20 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3️⃣ Starta applikationen
+#### 3️⃣ Starta applikationen
 
 ```bash
 
 python -m application.app
 ```
 
-### 4️⃣ Öppna sedan i webbläsaren:  
+#### 4️⃣ Öppna sedan i webbläsaren:  
 
 👉 http://localhost:5000/
 
 ---
 
-## Testning
+### Testning lokalt (virtuell miljö)
 
 För att köra alla tester:
 
@@ -110,6 +159,12 @@ pytest -q
 | `/healthz`   | Liveness-check                       |
 | `/readyz`    | Readiness-check                      |
 | `/metrics`   | Prometheus-metrik                    |
+
+Exempel på åtkomst:
+
+http://localhost:38080/metrics
+
+> **Obs:** Endpointen `/calculate` används via formuläret i webbgränssnittet och är inte avsedd att anropas direkt i webbläsaren (HTTP POST).
 
 ## CI/CD-pipelines (Build → PR till GitOps → Deployment)
 
