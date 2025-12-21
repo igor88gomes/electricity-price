@@ -13,7 +13,7 @@
 
 > Detta repository innehåller applikationslagret och är en del av en GitOps-baserad leveranslösning (DEV/STAGING/PROD) med separat GitOps-repository.
 
-> **Obs (säkerhet):** Automatiska säkerhetsskanningar (Trivy, Gitleaks) körs kontinuerligt i CI/CD-pipelinen, och findings kring beroenden och container image kan förekomma.
+> **Obs (säkerhet):** CI/CD-pipelinen kör kontinuerliga säkerhetsskanningar (**Trivy**, **Gitleaks**). Upptäckta secrets blockeras automatiskt av **Gitleaks** och stoppar pipelinen. Sårbarheter i beroenden och **container image** kan tillfälligt förekomma, identifieras av **Trivy** och hanteras löpande genom planerade dependency-uppdateringar.
 
 ## TL;DR
 
@@ -78,9 +78,7 @@ cd electricity-price
 
 Följande behöver vara installerat på systemet:
 
-- **Docker** med **Docker Compose**
-  *eller*
-- **Podman** med **Podman Compose**
+- **Docker** med **Docker Compose** *eller* **Podman** med **Podman Compose**
 
 Instruktionerna nedan använder **Docker** som standard.  
 Vid användning av **Podman**, ersätt:
