@@ -1,7 +1,7 @@
 ﻿# Ruff-konfiguration (lint + format) för Python-projektet
 # Mål: snabb statisk analys, konsekvent stil och Py312-funktioner.
 
-# Python-version (matchar din bild)
+# Python-version (matchar projektets runtime)
 target-version = "py312"
 
 # Max radlängd (hållbar med HTML-templating och tests)
