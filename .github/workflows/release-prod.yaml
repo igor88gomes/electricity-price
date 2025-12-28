@@ -35,8 +35,8 @@ jobs:
         id: meta
         run: echo "REL_TAG=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
 
-      # PROD återanvänd den redan byggda DEV-imagen (dev-<kort SHA>), taggas om
-      # till SemVer-taggen och dess digest skickas vidare.
+      # Återanvänder DEV:s multi-arch-manifest för PROD (ingen rebuild).
+      # Release triggas av SemVer-tagg, medan GitOps deployerar via digest.
       - name: Reuse DEV image and resolve PROD digest
         id: build
         shell: bash
@@ -48,14 +48,10 @@ jobs:
           echo "Using DEV_TAG=${DEV_TAG}"
           echo "Using REL_TAG=${REL_TAG}"
 
-          # Skapa en PROD-tag (SemVer) som pekar på EXAKT samma manifest som DEV-taggen.
-          # Detta återanvänder multi-arch-manifestet från build-steget (ingen rebuild, inget nytt digest).
           docker buildx imagetools create \
             --tag "${IMAGE_REPO}:${REL_TAG}" \
             "${IMAGE_REPO}:${DEV_TAG}"
 
-          # Hämta manifest-digest (sha256:...) för release-taggen.
-          # Samma manifest som DEV-taggen => samma digest som i DEV/STAGING.
           DIGEST=$(docker buildx imagetools inspect "${IMAGE_REPO}:${REL_TAG}" | sed -n 's/^Digest: //p' | head -n1)
 
           if [[ -z "${DIGEST}" ]]; then
@@ -66,7 +62,6 @@ jobs:
           echo "Resolved manifest digest (same as DEV/STAGING): ${DIGEST}"
           echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
 
-      # Exponera och sammanfatta digest (for traceability)
       - name: Expose image digest
         run: |
           echo "IMAGE_DIGEST=${{ steps.build.outputs.digest }}"

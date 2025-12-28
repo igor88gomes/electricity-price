@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       sha:
-        description: "Short commit SHA (7 characters) to promote"
+        description: "7-char SHA used to locate DEV image (dev-<sha>) and resolve the digest promoted to STAGING"
         required: true
         type: string
 
@@ -31,10 +31,8 @@ jobs:
           DEV_TAG="dev-${{ inputs.sha }}"
           echo "Using DEV_TAG=${DEV_TAG}"
 
-          # Hämta DEV-imagen som redan byggts av CD-flödet
           docker pull "${IMAGE_REPO}:${DEV_TAG}"
 
-          # Plocka ut manifest-digest (sha256:...)
           DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "${IMAGE_REPO}:${DEV_TAG}" | cut -d'@' -f2)
           if [[ -z "${DIGEST}" ]]; then
             echo "ERROR: could not retrieve digest for ${IMAGE_REPO}:${DEV_TAG}"
