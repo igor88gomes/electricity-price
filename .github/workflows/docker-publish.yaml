@@ -14,7 +14,7 @@ permissions:
   contents: read
   actions: write
   packages: write
-  security-events: write   # Behövs för att ladda upp Trivy SARIF till GitHub Code Scanning
+  security-events: write   
 
 jobs:
   build-publish:
@@ -66,13 +66,9 @@ jobs:
           path: image-digest.txt
           retention-days: 7
 
-      # Security: Trivy image scan + SARIF + SBOM
-
       - name: Trivy image scan (CRITICAL only, blocking)
-        # Skanna den byggda DEV-imagen efter kritiska sårbarheter innan GitOps-promotion
         uses: aquasecurity/trivy-action@0.33.1
         with:
-          # Använd senaste stabila Trivy-versionen (undviker borttagen tag v0.65.0)
           version: 'latest'
           image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
           vuln-type: 'os,library'
@@ -82,10 +78,8 @@ jobs:
           exit-code: '1'
 
       - name: Trivy image scan (SARIF report)
-        # Generera SARIF-rapport för GitHub Code Scanning (HIGH+CRITICAL)
         uses: aquasecurity/trivy-action@0.33.1
         with:
-          # Trivy är redan installerad i föregående steg
           skip-setup-trivy: true
           image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
           vuln-type: 'os,library'
@@ -96,53 +90,45 @@ jobs:
           exit-code: '0'
 
       - name: Upload Trivy SARIF to GitHub Security
-        # Ladda upp SARIF så att fynd visas under "Code scanning alerts"
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-image.sarif
 
       - name: Create SBOM directory
-        # Förbered katalog för SBOM-artifact
         if: always()
         run: mkdir -p sbom
 
       - name: Generate SBOM (CycloneDX) for image
-        # Skapa CycloneDX-SBOM för den byggda DEV-imagen
         if: always()
         continue-on-error: true
         uses: aquasecurity/trivy-action@0.33.1
         with:
-          # Återanvänd installerad Trivy, bara generera SBOM
           skip-setup-trivy: true
           image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
           format: 'cyclonedx'
           output: 'sbom/sbom.cdx.json'
           ignore-unfixed: true
           exit-code: '0'
-
+        
       - name: Validate SBOM
-        # Enkel kontroll att SBOM-filen finns och inte är tom
         if: always()
         id: sbom_meta
         run: |
           if [ ! -s sbom/sbom.cdx.json ]; then
-            echo "SBOM saknas eller är tom; hoppar över upload."
+            echo "SBOM missing or empty; skipping upload."
             echo "HAS_SBOM=false" >> "$GITHUB_OUTPUT"
           else
-            echo "SBOM hittades; kommer att laddas upp."
+            echo "SBOM found; will be uploaded."
             echo "HAS_SBOM=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Upload SBOM artifact
-        # Ladda upp SBOM så att den kan laddas ner från Actions-run
         if: always() && steps.sbom_meta.outputs.HAS_SBOM == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: sbom-cyclonedx
           path: sbom/sbom.cdx.json
           retention-days: 14
-
-      # Slut på security-del. Resten av flödet (GitOps)
 
       - name: Dispatch dev-update event to GitOps
         uses: peter-evans/repository-dispatch@v3
