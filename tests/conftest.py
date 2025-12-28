@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.fixture
 def get_text():
     def _get_text(response):
