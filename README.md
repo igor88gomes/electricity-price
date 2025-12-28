@@ -11,25 +11,32 @@
 
 > Av Igor Gomes
 
-> Detta repository innehåller applikationslagret och är en del av en GitOps-baserad leveranslösning (DEV/STAGING/PROD) med separat GitOps-repository.
+# Electricity Price Sweden — Application Repository
 
-> **Obs (säkerhet):** CI/CD-pipelinen kör kontinuerliga säkerhetsskanningar (**Trivy**, **Gitleaks**). Upptäckta secrets blockeras automatiskt av **Gitleaks** och stoppar pipelinen. Sårbarheter i beroenden och **container image** kan tillfälligt förekomma, identifieras av **Trivy** och hanteras löpande genom planerade dependency-uppdateringar.
+> Detta repository ansvarar för applikationskod och innehåller pipelines som testar, bygger och publicerar en container image (build artifact) samt initierar ett flöde till ett separat GitOps-repository.
+
+<p align="center">
+  <img src="docs/images/architecture.png" alt="Applikation och GitOps-arkitektur">
+  <br>
+  <em>Övergripande flöde för applikation och GitOps-leverans.</em>
+</p>
+
+> **Obs (säkerhet):** Pipelines i repositoryt kör kontinuerliga säkerhetsskanningar (**Trivy**, **Gitleaks**). Upptäckta secrets blockeras automatiskt av **Gitleaks** och stoppar flödet. Sårbarheter i beroenden och container image kan tillfälligt förekomma, identifieras av **Trivy** och hanteras löpande genom planerade uppdateringar.
 
 ## TL;DR
 
-**Vad:** Flask-baserad webbapplikation som visar elpriser för olika delar av Sverige per datum (tabell + diagram), baserat på extern realtids-API.  
+**Vad:** Python-baserad Flask-webbapplikation som visar elpriser för olika delar av Sverige per datum (tabell + diagram), baserat på extern realtids-API.  
 
 **Varför:** Byggd för att demonstrera produktionsnära DevOps- och plattformspraktiker kring en enkel applikation.  
 
-**Värde:** Stateless design utan databas som ger en lättviktig applikation med enkel drift, säkra deployer och horisontell skalning. CI med tester/coverage, secret scanning och container image build; leverans sker via GitOps-promotion DEV/STAGING/PROD med immutable image-digest.
-  
+**Värde:** Stateless design utan databas som ger en lättviktig applikation med enkel drift och horisontell skalning. Repositoryt visar ett produktionsnära flöde med tester/coverage, säkerhetsskanning och byggande av ett immutable container image, som kan användas fristående
+eller konsumeras av ett separat GitOps-repository för miljö-promotion.
+
 **Begränsningar:** Beroende av extern API och dess publiceringstider; begränsat datumintervall. Ingen autentisering eller caching (avsiktligt utanför scope).
 
-
-# Elprisberäkning.se
+## Applikationsbeskrivning
 
 Den Flask-baserade webbapplikationen låter användaren söka efter elpriser för olika delar av Sverige för ett valt datum. Applikationen visar timvisa elpriser (00:00–23:00). Data hämtas från en extern API, bearbetas med Pandas och presenteras i tabellform samt som interaktiva Plotly-diagram.
-
 
 ## Frontend – HTML, Jinja2 och Bootstrap
 
@@ -87,7 +94,7 @@ Vid användning av **Podman**, ersätt:
 
 ### Välj ett alternativ för att komma igång
 
-### Alternativ A: Kör med Docker Compose 
+### Alternativ A: Kör med Docker Compose (Python ingår i imagen)
 
 #### 1️⃣ Bygg och starta applikationen med ett kommando
 
@@ -98,44 +105,57 @@ docker compose up --build -d
 #### 2️⃣ Öppna i webbläsaren:
 
 - Applikationen: http://localhost:38080/
+
+<p align="center">
+  <img src="docs/images/app-home.png" alt="Applikationen körs lokalt">
+  <br>
+  <em>Startvy för applikationen (localhost:38080)</em>
+</p>
+
 - Health check: http://localhost:38080/healthz
+
+<p align="center">
+  <img src="docs/images/healthz.png" alt="Health check-endpoint">
+  <br>
+  <em>Health check-endpoint (/healthz)</em>
+</p>
 
 > Första bygget kan ta några minuter (beroenden laddas ner). Efterföljande builds går snabbare tack vare cache.
 
-### Alternativ B: Kör applikationen lokalt med virtuell miljö (utan container)
+### Alternativ B: Kör applikationen lokalt med Python-virtuell miljö (Kräver Python 3.12+ installerat)
 
-#### 1️⃣ Skapa virtuell miljö
+#### 1️⃣ Skapar lokal  miljö (katalogen .venv)
 
 ```bash
 python -m venv .venv
-# macOS/Linux
+```
+ 
+#### 2️⃣ Aktivera miljön
+
+```bash
+# På macOS/Linux
 source .venv/bin/activate  
 
-# eller på Windows (PowerShell)
-python -m venv .venv
+# På Windows (PowerShell)
 .\.venv\Scripts\Activate.ps1
 ```
-> Tips: Om PowerShell klagar på skriptpolicy, kör:
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned och öppna ett nytt PowerShell-fönster.
+> Tips: Om PowerShell klagar på skriptpolicy, kör: 
+> Set-ExecutionPolicy -Scope CurrentUser RemoteSigned 
 
-#### 2️⃣ Installera beroenden
+#### 3️⃣ Installera beroenden 
 
 ```bash
 python -m pip install --upgrade pip
-
-# och
-
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-#### 3️⃣ Starta applikationen
+#### 4️⃣ Starta applikationen
 
 ```bash
-
-python -m application.app
+python -m flask --app application.app run
 ```
 
-#### 4️⃣ Öppna sedan i webbläsaren:  
+#### 5️⃣ Öppna sedan i webbläsaren:  
 
 http://localhost:5000/
 
@@ -169,17 +189,22 @@ http://localhost:38080/metrics
 
 ## CI/CD-pipelines (Build → PR till GitOps → Deployment)
 
-Applikationen använder ett komplett GitOps-flöde över tre miljöer (DEV, STAGING, PROD).
-Alla miljöer drivs av automatiska PR:er och alla pipelines återanvänder samma multi-arch manifest-digest som byggs i DEV.
+Build, säkerhetskontroller och image-publicering sker i application-repositoryt, medan
+deployment och miljö-promotion hanteras via ett separat GitOps-repository.
 
-### ● Secret Scan – Gitleaks 
-### ● CI – Testning 
-### ● CD till DEV – bygger multi-arch, kör SBOM-generering, Trivy image scan och publicerar manifest-digest innan PR öppnas
-### ● Promote STAGING – återanvänder exakt samma digest som DEV
-### ● Release PROD – retaggar samma manifest (ingen rebuild)
+Promotioner initieras från application-repositoryt via `repository_dispatch`, vilket triggar
+workflows i GitOps-repositoryt som skapar Pull Requests som i sin tur triggar synk och deployment
+i respektive miljö (DEV, STAGING, PROD).
+
+### Workflows i Application Repository
+
+- **Secret Scan** – secret scanning med Gitleaks
+- **CI** – lint, format-kontroll, tester och coverage
+- **CD – DEV** – build och publicering av immutable multi-arch image (DEV), inklusive SBOM och Trivy scan
+- **Promote STAGING** – promotion av samma image digest från DEV
+- **Release PROD** – promotion av samma image digest till PROD utan rebuild
 
 **GitOps-repo (DEV/STAGING/PROD):** https://github.com/igor88gomes/electricity-price-gitops
-
 
 ## Projektstruktur
 
@@ -205,6 +230,5 @@ electricity-price/
 ## Kontakt
 
 Igor Gomes — DevOps Engineer  
-
-**E-post:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com)
+**E-post:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com)  
 [LinkedIn](https://www.linkedin.com/in/igor-gomes-5b6184290) 
