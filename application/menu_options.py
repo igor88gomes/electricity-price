@@ -1,4 +1,3 @@
-# Definiera menyval med motsvarande URL:er
 menu_options = [
     {"name": "Hem", "url": "/"},
     {"name": "Alternativ 1", "url": "/option1"},
