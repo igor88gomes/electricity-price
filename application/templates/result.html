@@ -1,26 +1,23 @@
 {% extends "layout.html" %}
 
 <a href="/" class="btn btn-secondary btn-sm float-left">Tillbaka till startsidan</a>
-<!-- En knapp för att återgå till hemsidan -->
 
 {% block title %}Elprisresultat{% endblock %}
-<!-- Rubrik som dynamiskt visas som "Elprisresultat" -->
 
 {% block content %}
     <div class="container mt-3">
         <h1 class="display-4 text-center">
             <strong style="font-size: 2.5rem; color: #000;">Elprisresultat</strong>
         </h1>
+
         <div class="mt-4">
-            <!-- Information om datum och prisgrupp -->
             <p><strong>Datum:</strong> {{ date }}</p>
             <p><strong>Prisklass:</strong> {{ price_class }}</p>
         </div>
     </div>
-    <!-- Rendera Pandas-tabelldata från Python-koden -->
+
     {{ pandas_table | safe }}
 
-    <!-- Rendera Plotly-grafen -->
     <div id="plotly-chart">
         {{ chart_html | safe }}
     </div>

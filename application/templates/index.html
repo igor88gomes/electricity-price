@@ -2,17 +2,16 @@
 
 {% block content %}
     <div class="container mt-3">
-        <!-- Formulär för att beräkna elpriset -->
         <form method="POST" action="/calculate">
 
             <h1 class="display-4 text-center">
-                <strong style="font-size: 2.5rem; color: #000;">Välkommen till Elprisberäkning.se</strong>
+                <strong style="font-size: 2.5rem; color: #000;">Välkommen till Electricity Price Sweden</strong>
            </h1>
 
             <p class="display-4 text-center">
                 <strong class="display-4" style="font-size: 1.5rem; color: #000;">Fyll i uppgifterna nedan och räkna ut elpriser för olika delar av Sverige!</strong>
             </p>
-            <!-- Inmatningsfält för år -->
+
             <div class="form-group">
                 <label for="year">År:</label>
                 <select class="form-control" id="year" name="year" required>
@@ -23,34 +22,28 @@
                 </select>
             </div>
 
-            <!-- Inmatningsfält för månad -->
             <div class="form-group">
                 <label for="month">Månad:</label>
                 <select class="form-control" id="month" name="month" required>
                     {% for m in range(1, 13) %}
-                    <!-- Jinja-loopen för att generera månads alternativ dynamiskt -->
                         <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <!-- Inmatningsfält för dag -->
             <div class="form-group">
                 <label for="day">Dag:</label>
                 <select class="form-control" id="day" name="day" required>
                     {% for d in range(1, 32) %}
-                    <!-- Jinja-loopen för att generera dags alternativ dynamiskt -->
                         <option value="{{ d }}" {% if d == day %}selected{% endif %}>{{ d }}</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <!-- Prisklass-dropdown -->
             <div class="form-group">
                 <label for="price_class">Prisklass:</label>
                 <select class="form-control" id="price_class" name="price_class" >
                     {% for option in ["SE1", "SE2", "SE3", "SE4"] %}
-                    <!-- Jinja-loopen för att generera prisklas alternativ dynamiskt -->
                         <option value="{{ option }}" {% if option == price_class %}selected{% endif %}>
                             {{ option }} =
                             {% if option == "SE1" %}
@@ -58,7 +51,7 @@
                             {% elif option == "SE2" %}
                                 Sundsvall / Norra Mellansverige
                             {% elif option == "SE3" %}
-                                Stockholm / Södra Mellansverige <!-- Standardvärde för prisklassen "SE3" -->
+                                Stockholm / Södra Mellansverige 
                             {% elif option == "SE4" %}
                                 Malmö / Södra Sverige
                             {% endif %}
@@ -67,22 +60,17 @@
                 </select>
             </div>
 
-            <!-- Knapp för att skicka formulärdata -->
             <div class="d-grid gap-2">
                 <button class="btn btn-primary" type="submit">Beräkna</button>
             </div>
         </form>
     </div>
 
-    <!-- Menyalternativ i navigeringsfältet -->
     <ul class="navbar-nav ml-auto d-flex align-items-center">
         {% for option in menu_options %}
             <li class="nav-item me-3">
                 <a class="nav-link text-white" href="{{ option.url }}">{{ option.name }}</a>
             </li>
-        <!-- Den här delen representerar navigeringsfältets menyalternativ. Den visar en lista med menyalternativ baserat på
-        "menu_options"-data från servern. När en menypost klickas, dirigeras användaren till den URL som anges i attributet "option.url".
-        Menyn ger navigeringsalternativ till andra delar av webbplatsen. -->
         {% endfor %}
     </ul>
 {% endblock %}

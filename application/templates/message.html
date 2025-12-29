@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <h1 class="h4 mb-3">{{ title }}</h1>
+
+      {% if severity %}
+        <div class="alert alert-{{ severity }} mb-3" role="alert">
+          {{ message }}
+        </div>
+      {% else %}
+        <p class="mb-3">{{ message }}</p>
+      {% endif %}
+
+      {% if details %}
+        <details class="mb-3">
+          <summary>Detaljer</summary>
+          <pre class="mt-2 mb-0">{{ details }}</pre>
+        </details>
+      {% endif %}
+
+      <a href="{{ back_url or '/' }}" class="btn btn-secondary">Tillbaka</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
