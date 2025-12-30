@@ -52,10 +52,14 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.GH_PAT }}
           commit-message: "chore(ci): update coverage badge"
           title: "chore(ci): update coverage badge"
+          body: "Automated coverage badge update."
           branch: bot/coverage-badge
           delete-branch: true
+          add-paths: |
+            .github/badges/coverage.svg
           automerge: true
           merge-method: squash
 
