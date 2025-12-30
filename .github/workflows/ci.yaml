@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   ci:
@@ -47,13 +48,16 @@ jobs:
           mkdir -p .github/badges
           coverage-badge -o .github/badges/coverage.svg -f
 
-      - name: Commit coverage badge on main
-        if: github.ref == 'refs/heads/main'
-        uses: EndBug/add-and-commit@v9
+      - name: Create PR for coverage badge update
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: peter-evans/create-pull-request@v6
         with:
-          add: ".github/badges/coverage.svg"
-          message: "chore(ci): update coverage badge"
-          default_author: github_actions
+          commit-message: "chore(ci): update coverage badge"
+          title: "chore(ci): update coverage badge"
+          branch: bot/coverage-badge
+          delete-branch: true
+          automerge: true
+          merge-method: squash
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
