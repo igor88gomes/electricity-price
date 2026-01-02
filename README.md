@@ -23,16 +23,23 @@
 
 > **Obs (säkerhet):** Pipelines i repositoryt kör kontinuerliga säkerhetsskanningar (**Trivy**, **Gitleaks**). Upptäckta secrets blockeras automatiskt av **Gitleaks** och stoppar flödet. Sårbarheter i beroenden och container image kan tillfälligt förekomma, identifieras av **Trivy** och hanteras löpande genom planerade uppdateringar.
 
-## TL;DR
+## Projektöversikt
 
-**Vad:** Python-baserad Flask-webbapplikation som visar elpriser för olika delar av Sverige per datum (tabell + diagram), baserat på extern realtids-API.  
+### Vad
 
-**Varför:** Byggd för att demonstrera produktionsnära DevOps- och plattformspraktiker kring en enkel applikation.  
+Python-baserad Flask-webbapplikation som visar elpriser för olika delar av Sverige per datum (tabell + diagram), baserat på extern realtids-API.  
 
-**Värde:** Stateless design utan databas som ger en lättviktig applikation med enkel drift och horisontell skalning. Repositoryt visar ett produktionsnära flöde med tester/coverage, säkerhetsskanning och byggande av ett immutable container image, som kan användas fristående
-eller konsumeras av ett separat GitOps-repository för miljö-promotion.
+### Varför
 
-**Begränsningar:** Beroende av extern API och dess publiceringstider; begränsat datumintervall. Ingen autentisering eller caching (avsiktligt utanför scope).
+Byggd för att demonstrera produktionsnära DevOps- och plattformspraktiker kring en enkel applikation.  
+
+### Värde
+
+Stateless design utan databas som ger en lättviktig applikation med enkel drift möjliggör horisontell skalning i Kubernetes. Repositoryt visar ett produktionsnära flöde med tester/coverage, säkerhetsskanning och byggande av ett immutable container image, som kan användas fristående eller konsumeras av ett separat GitOps-repository för miljö-promotion.
+
+### Avgränsningar
+
+Beroende av extern API och dess publiceringstider; begränsat datumintervall. Ingen autentisering eller caching (avsiktligt utanför scope).
 
 ## Applikationsbeskrivning
 
@@ -104,7 +111,7 @@ docker compose up --build -d
 
 #### 2️⃣ Öppna i webbläsaren:
 
-- Applikationen: http://localhost:38080/
+- Applikationen: http://localhost:38080
 
 <p align="center">
   <img src="docs/images/app-home.png" alt="Applikationen körs lokalt">
@@ -157,7 +164,7 @@ python -m flask --app application.app run
 
 #### 5️⃣ Öppna sedan i webbläsaren:  
 
-http://localhost:5000/
+http://localhost:5000
 
 ---
 
