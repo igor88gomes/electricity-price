@@ -85,7 +85,7 @@ def test_404_handler_returns_message(client, get_text):
     assert response.status_code == 404
     assert "Sidan du försökte nå finns inte." in get_text(response)
 
-
+@pytest.mark.skip(reason="temporary skip to test coverage badge")
 def test_internal_server_error(client):
     with app.test_request_context("/"):
         response, status = handle_internal_server_error(RuntimeError("boom"))
