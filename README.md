@@ -180,6 +180,12 @@ För att köra alla tester:
 pytest -q
 ```
 
+För att köra alla tester med coverage (samma coverage-mätning som i CI, men med rapport i terminalen):
+
+```bash
+pytest -q --cov=application --cov-report=term
+```
+
 ---
 
 ## Viktiga endpoints
