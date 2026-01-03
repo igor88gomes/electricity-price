@@ -48,6 +48,7 @@ jobs:
           mkdir -p .github/badges
           coverage-badge -o .github/badges/coverage.svg -f
 
+      # Om test- och coverage-resultatet är oförändrat förblir coverage.svg identisk och ingen PR skapas.
       - name: Create PR for coverage badge update
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: peter-evans/create-pull-request@v6
@@ -55,14 +56,12 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           commit-message: "chore(ci): update coverage badge"
           title: "chore(ci): update coverage badge"
-          body: "Automated coverage badge update."
+          body: "Coverage badge updated by CI. Requires manual review and merge."
           branch: bot/coverage-badge
           delete-branch: true
           add-paths: |
             .github/badges/coverage.svg
-          automerge: true
-          merge-method: squash
-
+         
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
