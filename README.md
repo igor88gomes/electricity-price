@@ -39,7 +39,11 @@ Stateless design utan databas som ger en lättviktig applikation med enkel drift
 
 ### Avgränsningar
 
-Beroende av extern API och dess publiceringstider; begränsat datumintervall. Ingen autentisering eller caching (avsiktligt utanför scope).
+Beroende av extern API och dess publiceringstider samt begränsat datumintervall. Ingen caching (avsiktligt utanför scope).
+
+## Datakälla
+
+Applikationen hämtar elprisdata från **Elpriset just nu** (elprisetjustnu.se), exponerat via ett publikt API: https://www.elprisetjustnu.se/elpris-api
 
 ## Applikationsbeskrivning
 
