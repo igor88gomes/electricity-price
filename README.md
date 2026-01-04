@@ -116,6 +116,7 @@ docker compose up --build -d
 #### 2️⃣ Öppna i webbläsaren:
 
 - Applikationen: http://localhost:38080
+- Health check: http://localhost:38080/healthz
 
 <p align="center">
   <img src="docs/images/app-home.png" alt="Applikationen körs lokalt">
@@ -123,15 +124,11 @@ docker compose up --build -d
   <em>Startvy för applikationen (localhost:38080)</em>
 </p>
 
-- Health check: http://localhost:38080/healthz
-
 <p align="center">
   <img src="docs/images/healthz.png" alt="Health check-endpoint">
   <br>
   <em>Health check-endpoint (/healthz)</em>
 </p>
-
-> Första bygget kan ta några minuter (beroenden laddas ner). Efterföljande builds går snabbare tack vare cache.
 
 ### Alternativ B: Kör applikationen lokalt med Python-virtuell miljö (Kräver Python 3.12+ installerat)
 
@@ -193,7 +190,7 @@ pytest -q --cov=application --cov-report=term
 | Endpoint     | Funktion                             |
 |--------------|--------------------------------------|
 | `/`          | Startvy med formulär                 |
-| `/calculate` | Beräknar och visar elprisdata (POST) |
+| `/calculate` | Beräknar och visar elprisdata        |
 | `/healthz`   | Liveness-check                       |
 | `/readyz`    | Readiness-check                      |
 | `/metrics`   | Prometheus-metrik                    |
@@ -248,4 +245,4 @@ electricity-price/
 
 Igor Gomes — DevOps Engineer  
 **E-post:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com)  
-[LinkedIn](https://www.linkedin.com/in/igor-gomes-5b6184290) 
+**LinkedIn:** [linkedin.com/in/igor-gomes-5b6184290](https://www.linkedin.com/in/igor-gomes-5b6184290)
