@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+from zoneinfo import ZoneInfo
 
 from application.date_utils import (
     get_default_form_field_values,
@@ -7,14 +8,16 @@ from application.date_utils import (
     validate_date,
 )
 
+STOCKHOLM_TZ = ZoneInfo("Europe/Stockholm")
+
 
 def test_get_min_max_allowed_dates():
     min_date, max_date = get_min_max_allowed_dates()
 
-    assert min_date == datetime(2022, 11, 1)
+    assert min_date == date(2022, 11, 1)
 
-    today = datetime.now().date()
-    assert max_date.date() in {today, (today + timedelta(days=1))}
+    today_stockholm = datetime.now(STOCKHOLM_TZ).date()
+    assert max_date == today_stockholm + timedelta(days=1)
 
 
 def test_get_default_form_field_values():
@@ -36,4 +39,7 @@ def test_validate_date():
 
     error_message, status_code = validate_date(2022, 10, 31)
     assert status_code == 422
-    assert error_message == "Sidan är begränsad till en dag i förväg och senast 2022-11-01 bakåt i tiden."
+    assert (
+        error_message
+        == "Sidan är begränsad till en dag i förväg och senast 2022-11-01 bakåt i tiden."
+    )
