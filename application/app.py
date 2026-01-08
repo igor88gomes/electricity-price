@@ -1,4 +1,5 @@
 import logging
+import socket
 import time
 
 from flask import Flask, Response, g, render_template, request, url_for
@@ -50,7 +51,11 @@ def healthz():
 
 @app.get("/readyz")
 def readyz():
-    return "ready", 200
+    try:
+        with socket.create_connection(("www.elprisetjustnu.se", 443), timeout=1):
+            return "ready", 200
+    except OSError:
+        return "not ready", 503
 
 
 @app.get("/metrics")
