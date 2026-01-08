@@ -1,8 +1,7 @@
-from datetime import datetime, timedelta, date
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 STOCKHOLM_TZ = ZoneInfo("Europe/Stockholm")
-
 MIN_DATE = date(2022, 11, 1)
 
 

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, date
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from application.date_utils import (
@@ -39,7 +39,4 @@ def test_validate_date():
 
     error_message, status_code = validate_date(2022, 10, 31)
     assert status_code == 422
-    assert (
-        error_message
-        == "Sidan är begränsad till en dag i förväg och senast 2022-11-01 bakåt i tiden."
-    )
+    assert error_message == "Sidan är begränsad till en dag i förväg och senast 2022-11-01 bakåt i tiden."
