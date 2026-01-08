@@ -18,8 +18,11 @@ def test_healthz_ok(client, get_text):
 
 def test_readyz_ok(client, get_text, monkeypatch):
     class _Conn:
-        def __enter__(self): return self
-        def __exit__(self, exc_type, exc, tb): return False
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
 
     monkeypatch.setattr("application.app.socket.create_connection", lambda *_a, **_kw: _Conn())
 
