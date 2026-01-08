@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
 
 from application.date_utils import (
     get_default_form_field_values,
@@ -7,14 +8,16 @@ from application.date_utils import (
     validate_date,
 )
 
+STOCKHOLM_TZ = ZoneInfo("Europe/Stockholm")
+
 
 def test_get_min_max_allowed_dates():
     min_date, max_date = get_min_max_allowed_dates()
 
-    assert min_date == datetime(2022, 11, 1)
+    assert min_date == date(2022, 11, 1)
 
-    today = datetime.now().date()
-    assert max_date.date() in {today, (today + timedelta(days=1))}
+    today_stockholm = datetime.now(STOCKHOLM_TZ).date()
+    assert max_date == today_stockholm + timedelta(days=1)
 
 
 def test_get_default_form_field_values():
