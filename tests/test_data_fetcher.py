@@ -11,7 +11,7 @@ def test_get_elpris_data_from_api_success(monkeypatch):
         def json(self):
             return {"key": "value"}
 
-    monkeypatch.setattr(requests, "get", lambda _url: _Response())
+    monkeypatch.setattr(requests, "get", lambda _url, **_kwargs: _Response())
 
     response = get_elpris_data_from_api("https://example.test/api/data")
     assert response == {"key": "value"}
@@ -25,14 +25,18 @@ def test_get_elpris_data_from_api_failure(monkeypatch):
         def json(self):
             return {"error": "Not Found"}
 
-    monkeypatch.setattr(requests, "get", lambda _url: _Response())
+    monkeypatch.setattr(requests, "get", lambda _url, **_kwargs: _Response())
 
     response = get_elpris_data_from_api("https://example.test/api/data")
     assert response is None
 
 
 def test_get_elpris_data_from_api_request_exception(monkeypatch):
-    monkeypatch.setattr(requests, "get", lambda _url: (_ for _ in ()).throw(requests.exceptions.RequestException()))
+    monkeypatch.setattr(
+        requests,
+        "get",
+        lambda _url, **_kwargs: (_ for _ in ()).throw(requests.exceptions.RequestException()),
+    )
 
     response = get_elpris_data_from_api("https://example.test/api/data")
     assert response is None
