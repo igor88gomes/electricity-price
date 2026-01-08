@@ -12,10 +12,10 @@ def extract_date_from_elpris_data(elpris_data: list[dict]) -> str:
 
 def fetch_and_process_elpris_data(year: int, month: int, day: int, price_class: str):
     api_url = _build_api_url(year, month, day, price_class)
-    elpris_data = get_elpris_data_from_api(api_url)
+    status, elpris_data = get_elpris_data_from_api(api_url)
 
-    if elpris_data is None:
-        return None, None, "no_data"
+    if status != "ok":
+        return None, None, status
 
     current_prices = create_pandas_dataframe(elpris_data)
     date = extract_date_from_elpris_data(elpris_data)

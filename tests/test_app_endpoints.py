@@ -54,9 +54,9 @@ def test_calculate_success_renders_result(client, monkeypatch, get_text):
     assert "Elprisresultat" in get_text(response)
 
 
-def test_calculate_returns_no_data_message(client, monkeypatch, get_text):
+def test_calculate_returns_no_data_yet_message(client, monkeypatch, get_text):
     def _fake_fetch_and_process_elpris_data(year, month, day, price_class):
-        return None, None, "no_data"
+        return None, None, "no_data_yet"
 
     monkeypatch.setattr(
         "application.app.fetch_and_process_elpris_data",
@@ -72,6 +72,26 @@ def test_calculate_returns_no_data_message(client, monkeypatch, get_text):
     text = get_text(response)
     assert "efter kl. 13:00" in text
     assert "Elprisdata ej tillgänglig ännu" in text
+
+
+def test_calculate_returns_upstream_error_message(client, monkeypatch, get_text):
+    def _fake_fetch_and_process_elpris_data(year, month, day, price_class):
+        return None, None, "upstream_error"
+
+    monkeypatch.setattr(
+        "application.app.fetch_and_process_elpris_data",
+        _fake_fetch_and_process_elpris_data,
+    )
+
+    response = client.post(
+        "/calculate",
+        data={"year": "2022", "month": "11", "day": "1", "price_class": "SE3"},
+    )
+
+    assert response.status_code == 502
+    text = get_text(response)
+    assert "Tillfälligt fel" in text
+    assert "Kunde inte hämta elprisdata" in text
 
 
 def test_invalid_endpoint(client, get_text):

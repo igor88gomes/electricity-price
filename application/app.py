@@ -104,7 +104,7 @@ def calculate_prices():
         price_class,
     )
 
-    if err == "no_data":
+    if err == "no_data_yet":
         return (
             render_template(
                 "message.html",
@@ -114,6 +114,18 @@ def calculate_prices():
                 back_url=url_for("index"),
             ),
             503,
+        )
+
+    if err == "upstream_error":
+        return (
+            render_template(
+                "message.html",
+                title="Tillfälligt fel",
+                message="Kunde inte hämta elprisdata just nu. Försök igen om en stund.",
+                severity="danger",
+                back_url=url_for("index"),
+            ),
+            502,
         )
 
     return render_template(
