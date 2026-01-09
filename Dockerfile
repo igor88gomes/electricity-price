@@ -19,7 +19,7 @@ COPY application ./application
 
 RUN chown -R appuser:appuser /app
 
-ENV GUNICORN_CMD_ARGS="--workers=2 --threads=2 --timeout=60"
+ENV GUNICORN_CMD_ARGS="--workers=2 --threads=2 --timeout=60 --graceful-timeout=30"
 
 EXPOSE 8000
 
