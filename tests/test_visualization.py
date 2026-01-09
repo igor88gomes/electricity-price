@@ -9,10 +9,7 @@ from application.electricity_price_visualization import (
 
 
 def test_create_pandas_dataframe():
-    sample_data = [
-        {"time_start": f"2023-11-05T{hour:02d}:00:00Z", "SEK_per_kWh": 40.0 + hour}
-        for hour in range(24)
-    ]
+    sample_data = [{"time_start": f"2023-11-05T{hour:02d}:00:00Z", "SEK_per_kWh": 40.0 + hour} for hour in range(24)]
 
     df = create_pandas_dataframe(sample_data)
 
