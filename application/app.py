@@ -86,7 +86,19 @@ def index():
 
 @app.post("/calculate")
 def calculate_prices():
-    year, month, day, price_class = get_user_input()
+    try:
+        year, month, day, price_class = get_user_input()
+    except ValueError as exc:
+        return (
+            render_template(
+                "message.html",
+                title="Ogiltig prisklass",
+                message=str(exc),
+                severity="danger",
+                back_url=url_for("index"),
+            ),
+            422,
+        )
 
     validation_error = validate_date(year, month, day)
     if validation_error:
