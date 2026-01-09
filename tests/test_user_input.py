@@ -16,3 +16,14 @@ def test_get_user_input(form, expected):
 
     with app.test_request_context(method="POST", data=form):
         assert get_user_input() == expected
+
+
+def test_get_user_input_invalid_price_class_raises_value_error():
+    app = Flask(__name__)
+
+    with app.test_request_context(
+        method="POST",
+        data={"year": "2023", "month": "11", "day": "10", "price_class": "SE9"},
+    ):
+        with pytest.raises(ValueError, match=r"Ogiltig prisklass\."):
+            get_user_input()
