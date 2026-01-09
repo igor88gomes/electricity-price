@@ -1,5 +1,6 @@
 import re
 
+import pandas as pd
 import pytest
 
 from application.app import app
@@ -59,3 +60,32 @@ def test_metrics_latency_has_healthz_label(client, get_text):
         )
         is not None
     )
+
+
+def test_metrics_exposes_upstream_requests_total(client, get_text, monkeypatch):
+    def _fake_fetch_and_process_elpris_data(year, month, day, price_class):
+        df = pd.DataFrame(
+            {
+                "Tidpunkt på dygnet i (hh:mm)": ["00:00"],
+                "Motsvarande pris i (kr/kWh)": [0.1],
+            }
+        )
+        return df, "2022-11-01", None
+
+    monkeypatch.setattr(
+        "application.app.fetch_and_process_elpris_data",
+        _fake_fetch_and_process_elpris_data,
+    )
+
+    r = client.post(
+        "/calculate",
+        data={"year": "2022", "month": "11", "day": "1", "price_class": "SE3"},
+    )
+    assert r.status_code == 200
+
+    metrics = client.get("/metrics")
+    assert metrics.status_code == 200
+    text = get_text(metrics)
+
+    assert "app_upstream_requests_total" in text
+    assert re.search(r'app_upstream_requests_total\{result="ok"\}\s+\d+(\.\d+)?', text) is not None
