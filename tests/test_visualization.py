@@ -1,4 +1,5 @@
 import pandas as pd
+import pytest
 
 from application.electricity_price_visualization import (
     create_chart,
@@ -8,17 +9,24 @@ from application.electricity_price_visualization import (
 
 
 def test_create_pandas_dataframe():
+    sample_data = [{"time_start": f"2023-11-05T{hour:02d}:00:00Z", "SEK_per_kWh": 40.0 + hour} for hour in range(24)]
+
+    df = create_pandas_dataframe(sample_data)
+
+    assert isinstance(df, pd.DataFrame)
+    assert len(df) == 24
+    assert "Tidpunkt på dygnet i (hh:mm)" in df.columns
+    assert "Motsvarande pris i (kr/kWh)" in df.columns
+
+
+def test_create_pandas_dataframe_raises_on_incomplete_data():
     sample_data = [
         {"time_start": "2023-11-05T00:00:00Z", "SEK_per_kWh": 40.0},
         {"time_start": "2023-11-05T01:00:00Z", "SEK_per_kWh": 45.0},
     ]
 
-    df = create_pandas_dataframe(sample_data)
-
-    assert isinstance(df, pd.DataFrame)
-    assert len(df) == 2
-    assert "Tidpunkt på dygnet i (hh:mm)" in df.columns
-    assert "Motsvarande pris i (kr/kWh)" in df.columns
+    with pytest.raises(ValueError, match="Förväntade minst 24 timposter från upstream-API"):
+        create_pandas_dataframe(sample_data)
 
 
 def test_create_pandas_table():

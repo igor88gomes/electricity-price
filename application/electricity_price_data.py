@@ -17,6 +17,10 @@ def fetch_and_process_elpris_data(year: int, month: int, day: int, price_class: 
     if status != "ok":
         return None, None, status
 
-    current_prices = create_pandas_dataframe(elpris_data)
+    try:
+        current_prices = create_pandas_dataframe(elpris_data)
+    except ValueError:
+        return None, None, "upstream_error"
+
     date = extract_date_from_elpris_data(elpris_data)
     return current_prices, date, None

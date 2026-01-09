@@ -48,3 +48,23 @@ def test_fetch_and_process_elpris_data_upstream_error(monkeypatch):
     assert current_prices is None
     assert date is None
     assert err == "upstream_error"
+
+
+def test_fetch_and_process_elpris_data_incomplete_payload_returns_upstream_error(monkeypatch):
+    def _fake_get_elpris_data_from_api(_api_url):
+        data = [
+            {"time_start": "2026-01-01T00:00:00+01:00", "SEK_per_kWh": 0.1},
+            {"time_start": "2026-01-01T01:00:00+01:00", "SEK_per_kWh": 0.2},
+        ]
+        return "ok", data
+
+    monkeypatch.setattr(
+        "application.electricity_price_data.get_elpris_data_from_api",
+        _fake_get_elpris_data_from_api,
+    )
+
+    current_prices, date, err = fetch_and_process_elpris_data(2026, 1, 1, "SE3")
+
+    assert current_prices is None
+    assert date is None
+    assert err == "upstream_error"
