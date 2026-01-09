@@ -25,6 +25,11 @@ HTTP_LATENCY = Histogram(
     "Latens för HTTP-anrop (sekunder)",
     ["endpoint"],
 )
+UPSTREAM_REQUESTS = Counter(
+    "app_upstream_requests_total",
+    "Totalt antal upstream-anrop (resultat)",
+    ["result"],
+)
 
 
 @app.before_request
@@ -103,6 +108,9 @@ def calculate_prices():
         day,
         price_class,
     )
+
+    upstream_result = "ok" if err is None else err
+    UPSTREAM_REQUESTS.labels(result=upstream_result).inc()
 
     if err == "no_data_yet":
         return (
