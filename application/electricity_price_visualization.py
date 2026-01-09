@@ -3,6 +3,9 @@ import plotly.graph_objects as go
 
 
 def create_pandas_dataframe(elpris_data: list[dict]) -> pd.DataFrame:
+    if not isinstance(elpris_data, list) or len(elpris_data) < 24:
+        raise ValueError("Förväntade minst 24 timposter från upstream-API")
+
     current_prices = [(hour, price["SEK_per_kWh"]) for hour, price in enumerate(elpris_data[:24])]
 
     return pd.DataFrame(
