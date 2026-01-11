@@ -49,9 +49,9 @@ Applikationen hämtar elprisdata från **Elpriset just nu** (elprisetjustnu.se),
 
 Den Flask-baserade webbapplikationen låter användaren söka efter elpriser för olika delar av Sverige för ett valt datum. Applikationen visar timvisa elpriser (00:00–23:00). Data hämtas från en extern API, bearbetas med Pandas och presenteras i tabellform samt som interaktiva Plotly-diagram.
 
-## Frontend – HTML, Jinja2 och Bootstrap
+## Frontend 
 
-Applikationens frontend använder **Jinja2‑templates** och **Bootstrap 5** för en enkel och responsiv UI‑upplevelse ovanpå den API‑drivna logiken.
+Applikationens frontend använder **Jinja2‑templates**, **HTML** och **Bootstrap 5** för en enkel och responsiv UI‑upplevelse ovanpå den API‑drivna logiken.
 
 ---
 
@@ -220,9 +220,7 @@ Promotioner initieras från application-repositoryt via `repository_dispatch`, p
 - **Promote STAGING** – promotion av samma image digest från DEV
 - **Release PROD** – promotion av samma image digest till PROD utan rebuild
 
-## Relaterade repositories
-
-**GitOps repository:** https://github.com/igor88gomes/electricity-price-gitops
+---
 
 ## Projektstruktur
 
@@ -242,6 +240,10 @@ electricity-price/
 ├── requirements.txt        # Python-beroenden för app + tester
 └── README.md               # Projektöversikt, användning och arkitektur
 ```
+
+## Relaterade repositories
+
+**GitOps repository:** https://github.com/igor88gomes/electricity-price-gitops
 
 ---
 
