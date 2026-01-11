@@ -140,17 +140,22 @@ python -m venv .venv
  
 #### 2️⃣ Aktivera miljön
 
-```bash
-# På macOS/Linux
-source .venv/bin/activate  
+> På macOS/Linux
 
-# På Windows (PowerShell)
+```bash
+source .venv/bin/activate  
+```
+
+> På Windows (PowerShell)
+
+```bash
 .\.venv\Scripts\Activate.ps1
 ```
+
 > Tips: Om PowerShell klagar på skriptpolicy, kör: 
 > Set-ExecutionPolicy -Scope CurrentUser RemoteSigned 
 
-#### 3️⃣ Installera beroenden 
+#### 3️⃣ Uppdatera pip och installera beroenden
 
 ```bash
 python -m pip install --upgrade pip
@@ -203,22 +208,21 @@ http://localhost:38080/metrics
 
 ## CI/CD-pipelines (Build → PR till GitOps → Deployment)
 
-Build, säkerhetskontroller och image-publicering sker i application-repositoryt, medan
-deployment och miljö-promotion hanteras via ett separat GitOps-repository.
+Build, säkerhetskontroller och publicering av container image till GitHub Container Registry (GHCR) sker via application-repositoryts pipelines, medan deployment och miljö-promotion verkställs via ett separat GitOps-repository.
 
-Promotioner initieras från application-repositoryt via `repository_dispatch`, vilket triggar
-workflows i GitOps-repositoryt som skapar Pull Requests som i sin tur triggar synk och deployment
-i respektive miljö (DEV, STAGING, PROD).
+Promotioner initieras från application-repositoryt via `repository_dispatch`, per workflow för respektive miljö, vilket triggar workflows i GitOps-repositoryt som skapar Pull Requests som i sin tur triggar synk och deployment i respektive miljö (DEV, STAGING, PROD).
 
 ### Workflows i Application Repository
 
 - **Secret Scan** – secret scanning med Gitleaks
 - **CI** – lint, format-kontroll, tester och coverage
-- **CD – DEV** – build och publicering av immutable multi-arch image (DEV), inklusive SBOM och Trivy scan
+- **CD – DEV** – build och publicering av immutable multi-arch image (DEV) till GHCR, inklusive SBOM och Trivy scan
 - **Promote STAGING** – promotion av samma image digest från DEV
 - **Release PROD** – promotion av samma image digest till PROD utan rebuild
 
-**GitOps-repo (DEV/STAGING/PROD):** https://github.com/igor88gomes/electricity-price-gitops
+## Relaterade repositories
+
+**GitOps repository:** https://github.com/igor88gomes/electricity-price-gitops
 
 ## Projektstruktur
 
