@@ -66,13 +66,13 @@ jobs:
           path: image-digest.txt
           retention-days: 7
 
-      - name: Trivy image scan (CRITICAL only, blocking)
+      - name: Trivy image scan (HIGH/CRITICAL, blocking)
         uses: aquasecurity/trivy-action@0.33.1
         with:
           version: 'latest'
           image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
           vuln-type: 'os,library'
-          severity: 'CRITICAL'
+          severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
           format: 'table'
           exit-code: '1'
