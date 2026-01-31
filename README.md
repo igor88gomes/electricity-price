@@ -26,34 +26,48 @@
 ## Projektöversikt
 
 ### Vad
-
-Python-baserad Flask-webbapplikation som visar elpriser för olika delar av Sverige per datum (tabell + diagram), baserat på extern realtids-API.  
+> Python-baserad Flask-webbapplikation som visar elpriser för olika delar av Sverige per datum  
+> (tabell + diagram), baserat på extern realtids-API.
 
 ### Varför
-
-Byggd för att demonstrera produktionsnära DevOps- och plattformspraktiker kring en enkel applikation.  
+> Byggd för att fungera som grund för ett tillförlitligt och produktionsnära leveransflöde.
 
 ### Värde
+> Stateless design utan databas ger ett förutsägbart driftbeteende och underlättar horisontell
+> skalning i Kubernetes. 
 
-Stateless design utan databas som ger en lättviktig applikation med enkel drift möjliggör horisontell skalning i Kubernetes. Repositoryt visar ett produktionsnära flöde med tester/coverage, säkerhetsskanning och byggande av ett immutable container image, som kan användas fristående eller konsumeras av ett separat GitOps-repository för miljö-promotion.
+> Repositoryt visar ett leveransflöde med tester och coverage,
+> säkerhetsskanning samt build av ett immutabelt container image som konsumeras av ett separat
+> GitOps-repository för kontrollerad miljö-promotion.
 
 ### Avgränsningar
-
-Beroende av extern API och dess publiceringstider samt begränsat datumintervall. Ingen caching (avsiktligt utanför scope).
+> Beroende av extern API och dess publiceringstider samt begränsat datumintervall.  
+> Ingen caching (avsiktligt utanför scope).
 
 ## Datakälla
 
 Applikationen hämtar elprisdata från **Elpriset just nu** (elprisetjustnu.se), exponerat via ett publikt API: https://www.elprisetjustnu.se/elpris-api
 
+## Teknikstack
+
+| Komponent         | Syfte / Roll                         |
+|-------------------|--------------------------------------|
+| Python            | Applikationsspråk                    |
+| Flask             | Webbramverk (API & UI)               |
+| Jinja2            | Template-rendering                   |
+| HTML / Bootstrap  | UI (frontend)                        |
+| Pandas            | Databehandling                       |
+| Plotly            | Interaktiva diagram                  |
+| pytest            | Enhetstestning                       |
+| prometheus-client | Metrik och monitoring                |
+
+Se `requirements.txt` för exakta versioner och beroenden.
+
+---
+
 ## Applikationsbeskrivning
 
 Den Flask-baserade webbapplikationen låter användaren söka efter elpriser för olika delar av Sverige för ett valt datum. Applikationen visar timvisa elpriser (00:00–23:00). Data hämtas från en extern API, bearbetas med Pandas och presenteras i tabellform samt som interaktiva Plotly-diagram.
-
-## Frontend 
-
-Applikationens frontend använder **Jinja2‑templates**, **HTML** och **Bootstrap 5** för en enkel och responsiv UI‑upplevelse ovanpå den API‑drivna logiken.
-
----
 
 ## Funktioner
 
@@ -64,22 +78,6 @@ Applikationens frontend använder **Jinja2‑templates**, **HTML** och **Bootstr
 - Hälsokontroller: `/healthz` och `/readyz`
 - Prometheus-metrik på `/metrics`
 - Fullt enhetstestad med `pytest`
-
----
-
-## Teknikstack
-
-| Komponent         |            Version / Info             |
-|-------------------|---------------------------------------|
-| Python            | 3.12                                  |
-| Flask             | 3.0                                   |
-| Pandas            | Databehandling och tabellpresentation |
-| Plotly            | Interaktiva diagram                   |
-| pytest            | Enhetstestning                        |
-| prometheus-client | Metrik och monitoring                 |
-
-
-Se `requirements.txt` för full lista av beroenden.
 
 ---
 
