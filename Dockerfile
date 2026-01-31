@@ -4,6 +4,11 @@
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
+# Uppdaterar systempaket i basimagen som en del av grundläggande säkerhets- och underhållspraxis
+RUN apt-get update \
+ && apt-get upgrade -y \
+ && rm -rf /var/lib/apt/lists/*
+
 # Skapa en icke-root användare med fast UID (1000) för bättre säkerhet
 RUN adduser --disabled-password --gecos "" --uid 1000 appuser
 
