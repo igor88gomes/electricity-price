@@ -61,8 +61,15 @@ Applikationen hämtar elprisdata från **Elpriset just nu** (elprisetjustnu.se),
 | pytest            | Enhetstestning                       |
 | prometheus-client | Metrik och monitoring                |
 
-Se `requirements.txt` för exakta versioner och beroenden.
+## Dependency management
 
+Projektet separerar runtime- och testberoenden i separata filer.
+
+| Fil                     | Innehåll                               | Användning                 |
+|-------------------------|----------------------------------------|----------------------------|
+| `requirements.txt`      | Runtime-beroenden för applikationen    | Bygga container image      |
+| `requirements-test.txt` | Test-, coverage- och CI-verktyg        | CI-pipeline och lokal test |
+   
 ---
 
 ## Applikationsbeskrivning
@@ -174,13 +181,22 @@ http://localhost:5000
 
 ### Testning lokalt (virtuell miljö)
 
-För att köra alla tester:
+För att köra alla tester i terminalen:
+
+#### 1️⃣ Uppdatera pip och installera testberoenden
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements-test.txt
+```
+
+#### 2️⃣ Köra tester 
 
 ```bash
 pytest -q
 ```
 
-För att köra alla tester med coverage (samma coverage-mätning som i CI, men med rapport i terminalen):
+#### 3️⃣ Kör tester med coverage (samma mätning som i CI)
 
 ```bash
 pytest -q --cov=application --cov-report=term
@@ -235,7 +251,8 @@ electricity-price/
 ├── docker-compose.yaml     # Lokal körning med Docker Compose
 ├── Dockerfile              # Bygger Docker-image för Flask-applikationen
 ├── pytest.ini              # Pytest-konfiguration (plugins, options)
-├── requirements.txt        # Python-beroenden för app + tester
+├── requirements.txt        # Runtime-beroenden för applikationen
+├── requirements-test.txt   # Test- och CI-beroenden
 └── README.md               # Projektöversikt, användning och arkitektur
 ```
 
