@@ -1,0 +1,38 @@
+version: 2
+updates:
+  # Uppdaterar GitHub Actions som används i workflows (checkout, buildx, trivy m.fl.)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "10:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 1
+    rebase-strategy: "auto"
+    groups:
+      gha-patch-minor:
+        patterns: ["*"]
+        update-types: ["patch", "minor"]
+
+  # Kontrollerade uppdateringar av Python-beroenden
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "10:20"
+      timezone: "UTC"
+    open-pull-requests-limit: 1
+    rebase-strategy: "auto"
+
+  # Håller basimagen i Dockerfile uppdaterad (t.ex. python:3.12-slim)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "sunday"
+      time: "10:40"
+      timezone: "UTC"
+    open-pull-requests-limit: 1
+    rebase-strategy: "auto"
