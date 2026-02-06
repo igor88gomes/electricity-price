@@ -1,13 +1,9 @@
-﻿FROM python:3.12-slim
+﻿# Basimage låst med manifest-digest för reproducerbara builds och kontrollerade säkerhetsuppdateringar
+FROM python:3.12-slim@sha256:43e4d702bbfe3bd6d5b743dc571b67c19121302eb172951a9b7b0149783a1c21
 
 # Miljövariabler för att undvika .pyc-filer och få omedelbar loggning i stdout
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
-
-# Uppdaterar systempaket i basimagen som en del av grundläggande säkerhets- och underhållspraxis
-RUN apt-get update \
- && apt-get upgrade -y \
- && rm -rf /var/lib/apt/lists/*
 
 # Skapa en icke-root användare med fast UID (1000) för bättre säkerhet
 RUN adduser --disabled-password --gecos "" --uid 1000 appuser
