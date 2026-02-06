@@ -8,19 +8,13 @@ on:
       - "application/**"
       - "tests/**"
       - "requirements.txt"
+      - "requirements-test.txt"
       - "pytest.ini"
       - ".ruff.toml"
       - ".github/workflows/ci.yaml"
   pull_request:
     branches:
       - main
-    paths:
-      - "application/**"
-      - "tests/**"
-      - "requirements.txt"
-      - "pytest.ini"
-      - ".ruff.toml"
-      - ".github/workflows/ci.yaml"
 
 permissions:
   contents: write
