@@ -53,6 +53,8 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_REPO }}:${{ steps.meta.outputs.DEV_TAG }}
+          cache-from: type=gha 
+          cache-to: type=gha,mode=max 
 
       - name: Expose image digest (for promotion/use later)
         run: |
