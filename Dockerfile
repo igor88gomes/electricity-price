@@ -13,12 +13,9 @@ WORKDIR /app
 COPY requirements.txt .
 
 RUN python -m pip install --upgrade "pip>=25.3" --no-cache-dir && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir gunicorn
+    pip install --no-cache-dir -r requirements.txt && 
 
-COPY application ./application
-
-RUN chown -R appuser:appuser /app
+COPY --chown=appuser:appuser application ./application
 
 ENV GUNICORN_CMD_ARGS="--workers=2 --threads=2 --timeout=60 --graceful-timeout=30"
 
