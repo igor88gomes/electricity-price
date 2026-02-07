@@ -13,7 +13,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 RUN python -m pip install --upgrade "pip>=25.3" --no-cache-dir && \
-    pip install --no-cache-dir -r requirements.txt && 
+    pip install --no-cache-dir -r requirements.txt 
 
 COPY --chown=appuser:appuser application ./application
 
