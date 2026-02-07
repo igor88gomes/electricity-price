@@ -26,7 +26,8 @@ updates:
     open-pull-requests-limit: 1
     rebase-strategy: "auto"
 
-  # Håller basimagen i Dockerfile uppdaterad (t.ex. python:3.12-slim)
+  # Kontrollerade uppdateringar av Docker-images
+  # Versions-tagg är låst och digest används per image
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -36,3 +37,6 @@ updates:
       timezone: "UTC"
     open-pull-requests-limit: 1
     rebase-strategy: "auto"
+    ignore:
+      - dependency-name: "python"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
