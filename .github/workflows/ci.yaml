@@ -64,7 +64,7 @@ jobs:
       # Om test- och coverage-resultatet är oförändrat förblir coverage.svg identisk och ingen PR skapas.
       - name: Create PR for coverage badge update
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GH_PAT }}
           commit-message: "chore(ci): update coverage badge"
