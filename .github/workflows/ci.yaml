@@ -38,10 +38,10 @@ jobs:
 
       - name: Install dependencies (app + test + lint)
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
-          pip install ruff
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install -r requirements-test.txt
+          python -m pip install ruff
 
       - name: Ruff static analysis (lint)
         run: ruff check .
@@ -53,13 +53,15 @@ jobs:
         run: |
           pytest -q --cov=application --cov-report=xml
 
-      - name: Install coverage-badge tool
-        run: pip install coverage-badge
+      - name: Install badge generator
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install genbadge[coverage]
 
       - name: Generate coverage badge SVG
         run: |
           mkdir -p .github/badges
-          coverage-badge -o .github/badges/coverage.svg -f
+          genbadge coverage -i coverage.xml -o .github/badges/coverage.svg
 
       # Om test- och coverage-resultatet är oförändrat förblir coverage.svg identisk och ingen PR skapas.
       - name: Create PR for coverage badge update

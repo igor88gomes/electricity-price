@@ -22,6 +22,10 @@
 </p>
 
 > **Obs (säkerhet):** Pipelines i repositoryt kör kontinuerliga säkerhetsskanningar (**Trivy**, **Gitleaks**). Upptäckta secrets blockeras automatiskt av **Gitleaks** och stoppar flödet. Sårbarheter i beroenden och container image kan tillfälligt förekomma, identifieras av **Trivy** och hanteras löpande genom planerade uppdateringar.
+>
+> **Underhåll:** Dependabot används för schemalagda och kontrollerade uppdateringar av Python-beroenden, GitHub Actions och Docker base image.
+>
+> **Container build:** Imagen byggs via Dockerfile (non-root, pinned base image digest och healthcheck) och används både lokalt och i CI/CD-flödet.
 
 ## Projektöversikt
 
