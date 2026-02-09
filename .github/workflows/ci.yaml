@@ -38,10 +38,10 @@ jobs:
 
       - name: Install dependencies (app + test + lint)
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
-          pip install ruff
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install -r requirements-test.txt
+          python -m pip install ruff
 
       - name: Ruff static analysis (lint)
         run: ruff check .
@@ -54,7 +54,9 @@ jobs:
           pytest -q --cov=application --cov-report=xml
 
       - name: Install coverage-badge tool
-        run: pip install coverage-badge
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install coverage-badge
 
       - name: Generate coverage badge SVG
         run: |
