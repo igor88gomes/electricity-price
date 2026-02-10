@@ -15,10 +15,16 @@
 
 > Detta repository ansvarar för applikationskod och innehåller pipelines som testar, bygger och publicerar en container image (build artifact) samt initierar ett flöde till ett separat GitOps-repository.
 
+## Related repositories
+
+- **GitOps (deployment & environment promotion): https://github.com/igor88gomes/electricity-price-gitops
+
+## End-to-end CI/CD och GitOps-arkitektur
+
 <p align="center">
   <img src="docs/images/architecture.png" alt="Applikation och GitOps-arkitektur">
   <br>
-  <em>Övergripande flöde för applikation och GitOps-leverans.</em>
+  <em>Övergripande CI/CD-flöde från applikationsbuild till GitOps-styrd deployment.</em>
 </p>
 
 > **Obs (säkerhet):** Pipelines i repositoryt kör kontinuerliga säkerhetsskanningar (**Trivy**, **Gitleaks**). Upptäckta secrets blockeras automatiskt av **Gitleaks** och stoppar flödet. Sårbarheter i beroenden och container image kan tillfälligt förekomma, identifieras av **Trivy** och hanteras löpande genom planerade uppdateringar.
@@ -259,10 +265,6 @@ electricity-price/
 ├── requirements-test.txt   # Test- och CI-beroenden
 └── README.md               # Projektöversikt, användning och arkitektur
 ```
-
-## Relaterade repositories
-
-**GitOps repository:** https://github.com/igor88gomes/electricity-price-gitops
 
 ---
 
