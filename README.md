@@ -17,7 +17,7 @@
 
 ## Related repositories
 
-**GitOps (deployment & environment promotion): https://github.com/igor88gomes/electricity-price-gitops
+**GitOps (deployment & environment promotion):** https://github.com/igor88gomes/electricity-price-gitops
 
 ## End-to-end CI/CD och GitOps-arkitektur
 
