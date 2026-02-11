@@ -15,7 +15,7 @@
 
 > Detta repository ansvarar för applikationskod och innehåller pipelines som testar, bygger och publicerar en container image (build artifact) samt initierar ett flöde till ett separat GitOps-repository.
 
-## Related repositories
+## Relaterade Repository
 
 **GitOps (deployment & environment promotion):** https://github.com/igor88gomes/electricity-price-gitops
 
