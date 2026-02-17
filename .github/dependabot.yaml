@@ -19,7 +19,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "sunday"
       time: "10:20"
       timezone: "UTC"
