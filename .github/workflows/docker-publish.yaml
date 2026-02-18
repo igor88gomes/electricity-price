@@ -138,6 +138,7 @@ jobs:
           path: sbom/sbom.cdx.json
           retention-days: 14
 
+      # GitOps drivs via repository_dispatch: uppdatera DEV och trigga promotion-flödet med samma tag + digest (inga rebuilds i GitOps)
       - name: Dispatch dev-update event to GitOps
         uses: peter-evans/repository-dispatch@v3
         with:
