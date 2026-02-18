@@ -10,6 +10,7 @@ RUN adduser --disabled-password --gecos "" --uid 1000 appuser
 
 WORKDIR /app
 
+# Beroenden för ren runtime-image (hålls separerade från testberoenden)
 COPY requirements.txt .
 
 RUN python -m pip install --upgrade "pip>=25.3" --no-cache-dir && \
