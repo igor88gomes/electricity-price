@@ -18,6 +18,7 @@ RUN python -m pip install --upgrade "pip>=25.3" --no-cache-dir && \
 
 COPY --chown=appuser:appuser application ./application
 
+# Driftinställningar för Gunicorn (workers/threads + timeouts) för förutsägbar prestanda
 ENV GUNICORN_CMD_ARGS="--workers=2 --threads=2 --timeout=60 --graceful-timeout=30"
 
 EXPOSE 8000
