@@ -25,6 +25,10 @@ updates:
       timezone: "UTC"
     open-pull-requests-limit: 1
     rebase-strategy: "auto"
+    groups:
+      pip-patch-minor:
+        patterns: ["*"]
+        update-types: ["patch", "minor"]
 
   # Kontrollerade uppdateringar av Docker-images
   # Versions-tagg är låst och digest används per image
