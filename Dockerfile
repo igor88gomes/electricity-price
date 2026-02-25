@@ -13,8 +13,8 @@ WORKDIR /app
 # Beroenden för ren runtime-image (hålls separerade från testberoenden)
 COPY requirements.txt .
 
-RUN python -m pip install --upgrade "pip>=25.3" --no-cache-dir && \
-    pip install --no-cache-dir -r requirements.txt 
+RUN python -m pip install --upgrade "pip>=25,<26" --no-cache-dir && \
+    pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=appuser:appuser application ./application
 
@@ -27,7 +27,13 @@ USER appuser
 
 # Hälsokontroll mot /healthz
 HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD python -c "import urllib.request, sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz').getcode()==200 else 1)"
+  CMD python -c "import urllib.request, sys; \
+    import socket; \
+    try: \
+      r=urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=2); \
+      sys.exit(0 if r.getcode()==200 else 1); \
+    except Exception: \
+      sys.exit(1)"
 
 # gunicorn target: <modul>:<Flask-app>
 CMD ["gunicorn", "-b", "0.0.0.0:8000", "application.app:app"]
