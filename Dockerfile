@@ -13,7 +13,7 @@ WORKDIR /app
 # Beroenden för ren runtime-image (hålls separerade från testberoenden)
 COPY requirements.txt .
 
-RUN python -m pip install --upgrade "pip>=25,<26" --no-cache-dir && \
+RUN python -m pip install --upgrade "pip>=26,<27" --no-cache-dir && \
     pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=appuser:appuser application ./application
