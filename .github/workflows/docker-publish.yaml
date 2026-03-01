@@ -74,37 +74,44 @@ jobs:
           path: image-digest.txt
           retention-days: 7
 
-      - name: Trivy image scan (HIGH/CRITICAL, blocking)
-        uses: aquasecurity/trivy-action@0.34.1
-        with:
-          image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
-          vuln-type: 'os,library'
-          severity: 'HIGH,CRITICAL'
-          ignore-unfixed: true
-          format: 'table'
-          exit-code: '1'
+      - name: Install Trivy (pinned)
+        run: |
+          set -euo pipefail
+          TRIVY_VERSION="0.69.1"
+          curl -sSL -o trivy.tar.gz \
+            "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          tar -xzf trivy.tar.gz trivy
+          sudo install -m 0755 trivy /usr/local/bin/trivy
+          trivy --version
 
-      - name: Trivy image scan (SARIF report)
-        if: always()
-        uses: aquasecurity/trivy-action@0.34.1
-        with:
-          image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
-          vuln-type: 'os,library'
-          severity: 'HIGH,CRITICAL'
-          ignore-unfixed: true
-          format: 'sarif'
-          output: 'trivy-image.sarif'
-          exit-code: '0'
+      - name: Trivy image scan (HIGH/CRITICAL, blocking)
+        run: |
+          trivy image \
+            --vuln-type os,library \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --format table \
+            --exit-code 1 \
+            "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
+
+
+      - name: Trivy image scan (HIGH/CRITICAL, blocking)
+        run: |
+          trivy image \
+            --vuln-type os,library \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --format table \
+            --exit-code 1 \
+            "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
 
       - name: Validate SARIF
         if: always()
         id: sarif_meta
         run: |
           if [ ! -s trivy-image.sarif ]; then
-            echo "SARIF missing or empty; skipping upload."
             echo "HAS_SARIF=false" >> "$GITHUB_OUTPUT"
           else
-            echo "SARIF found; will be uploaded."
             echo "HAS_SARIF=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -121,13 +128,13 @@ jobs:
       - name: Generate SBOM (CycloneDX) for image
         if: always()
         continue-on-error: true
-        uses: aquasecurity/trivy-action@0.34.1
-        with:
-          image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
-          format: 'cyclonedx'
-          output: 'sbom/sbom.cdx.json'
-          ignore-unfixed: true
-          exit-code: '0'
+        run: |
+          trivy image \
+            --ignore-unfixed \
+            --format cyclonedx \
+            --output sbom/sbom.cdx.json \
+            --exit-code 0 \
+            "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
         
       - name: Validate SBOM
         if: always()
