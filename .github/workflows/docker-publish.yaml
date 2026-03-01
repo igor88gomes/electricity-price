@@ -74,19 +74,23 @@ jobs:
           path: image-digest.txt
           retention-days: 7
 
-      - name: Install Trivy (pinned)
-        run: |
-          set -euo pipefail
-          TRIVY_VERSION="0.69.1"
-          curl -sSL -o trivy.tar.gz \
-            "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
-          tar -xzf trivy.tar.gz trivy
-          sudo install -m 0755 trivy /usr/local/bin/trivy
-          trivy --version
+      - name: Cache Trivy DB
+        if: always()
+        uses: actions/cache@v4
+        with:
+          path: .trivycache
+          key: trivy-db-${{ runner.os }}-v1
 
       - name: Trivy image scan (HIGH/CRITICAL, blocking)
+        id: trivy_block
+        continue-on-error: true
         run: |
-          trivy image \
+          mkdir -p .trivycache
+          docker run --rm \
+            -v "${PWD}:/work" -w /work \
+            -v "${PWD}/.trivycache:/root/.cache/trivy" \
+            aquasec/trivy:0.59.1 \
+            image \
             --vuln-type os,library \
             --severity HIGH,CRITICAL \
             --ignore-unfixed \
@@ -94,15 +98,21 @@ jobs:
             --exit-code 1 \
             "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
 
-
-      - name: Trivy image scan (HIGH/CRITICAL, blocking)
+      - name: Trivy image scan (SARIF report)
+        if: always()
         run: |
-          trivy image \
+          mkdir -p .trivycache
+          docker run --rm \
+            -v "${PWD}:/work" -w /work \
+            -v "${PWD}/.trivycache:/root/.cache/" \
+            aquasec/trivy:0.59.1 \
+            image \
             --vuln-type os,library \
             --severity HIGH,CRITICAL \
             --ignore-unfixed \
-            --format table \
-            --exit-code 1 \
+            --format sarif \
+            --output trivy-image.sarif \
+            --exit-code 0 \
             "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
 
       - name: Validate SARIF
@@ -129,7 +139,12 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          trivy image \
+          mkdir -p .trivycache sbom
+          docker run --rm \
+            -v "${PWD}:/work" -w /work \
+            -v "${PWD}/.trivycache:/root/.cache/" \
+            aquasec/trivy:0.59.1 \
+            image \
             --ignore-unfixed \
             --format cyclonedx \
             --output sbom/sbom.cdx.json \
@@ -156,8 +171,17 @@ jobs:
           path: sbom/sbom.cdx.json
           retention-days: 14
 
+      - name: Enforce vulnerability gate (fail if blocking scan failed)
+        if: always()
+        run: |
+          if [ "${{ steps.trivy_block.outcome }}" != "success" ]; then
+            echo "Trivy blocking scan failed (HIGH/CRITICAL found). Failing pipeline after reports."
+            exit 1
+          fi
+
       # GitOps drivs via repository_dispatch: uppdatera DEV och trigga promotion-flödet med samma tag + digest (inga rebuilds i GitOps)
       - name: Dispatch dev-update event to GitOps
+        if: steps.trivy_block.outcome == 'success'
         uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.GH_PAT }}
@@ -170,6 +194,7 @@ jobs:
             }
 
       - name: Dispatch promote-staging event to GitOps
+        if: steps.trivy_block.outcome == 'success'
         uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.GH_PAT }}
@@ -183,7 +208,9 @@ jobs:
             }
 
       - name: Info
+        if: steps.trivy_block.outcome == 'success'
         run: |
           echo "Sent update-dev and promote-staging events to GitOps:"
           echo "  Tag:    ${{ steps.meta.outputs.DEV_TAG }}"
           echo "  Digest: ${{ steps.build.outputs.digest }}"
+
