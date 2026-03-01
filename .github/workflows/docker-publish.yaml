@@ -74,32 +74,27 @@ jobs:
           path: image-digest.txt
           retention-days: 7
 
-      - name: Setup Trivy
-        uses: aquasecurity/setup-trivy@v0.2.2
-        with:
-          version: latest
-
       - name: Trivy image scan (HIGH/CRITICAL, blocking)
-        run: |
-          trivy image \
-            --vuln-type os,library \
-            --severity HIGH,CRITICAL \
-            --ignore-unfixed \
-            --format table \
-            --exit-code 1 \
-            "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
+        uses: aquasecurity/trivy-action@0.34.1
+        with:
+          image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
+          vuln-type: 'os,library'
+          severity: 'HIGH,CRITICAL'
+          ignore-unfixed: true
+          format: 'table'
+          exit-code: '1'
 
       - name: Trivy image scan (SARIF report)
         if: always()
-        run: |
-          trivy image \
-            --vuln-type os,library \
-            --severity HIGH,CRITICAL \
-            --ignore-unfixed \
-            --format sarif \
-            --output trivy-image.sarif \
-            --exit-code 0 \
-            "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
+        uses: aquasecurity/trivy-action@0.34.1
+        with:
+          image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
+          vuln-type: 'os,library'
+          severity: 'HIGH,CRITICAL'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-image.sarif'
+          exit-code: '0'
 
       - name: Validate SARIF
         if: always()
@@ -123,14 +118,13 @@ jobs:
 
       - name: Generate SBOM (CycloneDX) for image
         if: always()
-        continue-on-error: true
-        run: |
-          trivy image \
-            --ignore-unfixed \
-            --format cyclonedx \
-            --output sbom/sbom.cdx.json \
-            --exit-code 0 \
-            "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
+        uses: aquasecurity/trivy-action@0.34.1
+        with:
+          image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
+          format: 'cyclonedx'
+          output: 'sbom/sbom.cdx.json'
+          ignore-unfixed: true
+          exit-code: '0'
         
       - name: Validate SBOM
         if: always()
