@@ -74,30 +74,45 @@ jobs:
           path: image-digest.txt
           retention-days: 7
 
-      - name: Trivy image scan (HIGH/CRITICAL, blocking)
-        uses: aquasecurity/trivy-action@0.34.1
+      - name: Setup Trivy
+        uses: aquasecurity/setup-trivy@v0.2.2
         with:
-          version: 'latest'
-          image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
-          vuln-type: 'os,library'
-          severity: 'HIGH,CRITICAL'
-          ignore-unfixed: true
-          format: 'table'
-          exit-code: '1'
+          version: latest
+
+      - name: Trivy image scan (HIGH/CRITICAL, blocking)
+        run: |
+          trivy image \
+            --vuln-type os,library \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --format table \
+            --exit-code 1 \
+            "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
 
       - name: Trivy image scan (SARIF report)
-        uses: aquasecurity/trivy-action@0.34.1
-        with:
-          skip-setup-trivy: true
-          image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
-          vuln-type: 'os,library'
-          severity: 'HIGH,CRITICAL'
-          ignore-unfixed: true
-          format: 'sarif'
-          output: 'trivy-image.sarif'
-          exit-code: '0'
+        if: always()
+        run: |
+          trivy image \
+            --vuln-type os,library \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --format sarif \
+            --output trivy-image.sarif \
+            --exit-code 0 \
+            "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
+
+      - name: Validate SARIF
+        if: always()
+        id: sarif_meta
+        run: |
+          if [ ! -s trivy-image.sarif ]; then
+            echo "HAS_SARIF=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "HAS_SARIF=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload Trivy SARIF to GitHub Security
+        if: always() && steps.sarif_meta.outputs.HAS_SARIF == 'true'
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-image.sarif
@@ -109,14 +124,13 @@ jobs:
       - name: Generate SBOM (CycloneDX) for image
         if: always()
         continue-on-error: true
-        uses: aquasecurity/trivy-action@0.34.1
-        with:
-          skip-setup-trivy: true
-          image-ref: ${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}
-          format: 'cyclonedx'
-          output: 'sbom/sbom.cdx.json'
-          ignore-unfixed: true
-          exit-code: '0'
+        run: |
+          trivy image \
+            --ignore-unfixed \
+            --format cyclonedx \
+            --output sbom/sbom.cdx.json \
+            --exit-code 0 \
+            "${{ env.IMAGE_REPO }}@${{ steps.build.outputs.digest }}"
         
       - name: Validate SBOM
         if: always()
