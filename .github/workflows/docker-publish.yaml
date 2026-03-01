@@ -87,8 +87,9 @@ jobs:
         run: |
           mkdir -p .trivycache
           docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -e TRIVY_CACHE_DIR=/work/.trivycache \
             -v "${PWD}:/work" -w /work \
-            -v "${PWD}/.trivycache:/root/.cache/trivy" \
             aquasec/trivy:0.59.1 \
             image \
             --vuln-type os,library \
@@ -103,8 +104,9 @@ jobs:
         run: |
           mkdir -p .trivycache
           docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -e TRIVY_CACHE_DIR=/work/.trivycache \
             -v "${PWD}:/work" -w /work \
-            -v "${PWD}/.trivycache:/root/.cache/" \
             aquasec/trivy:0.59.1 \
             image \
             --vuln-type os,library \
@@ -141,8 +143,9 @@ jobs:
         run: |
           mkdir -p .trivycache sbom
           docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -e TRIVY_CACHE_DIR=/work/.trivycache \
             -v "${PWD}:/work" -w /work \
-            -v "${PWD}/.trivycache:/root/.cache/" \
             aquasec/trivy:0.59.1 \
             image \
             --ignore-unfixed \
@@ -170,14 +173,6 @@ jobs:
           name: sbom-cyclonedx
           path: sbom/sbom.cdx.json
           retention-days: 14
-
-      - name: Enforce vulnerability gate (fail if blocking scan failed)
-        if: always()
-        run: |
-          if [ "${{ steps.trivy_block.outcome }}" != "success" ]; then
-            echo "Trivy blocking scan failed (HIGH/CRITICAL found). Failing pipeline after reports."
-            exit 1
-          fi
 
       # GitOps drivs via repository_dispatch: uppdatera DEV och trigga promotion-flödet med samma tag + digest (inga rebuilds i GitOps)
       - name: Dispatch dev-update event to GitOps
@@ -213,4 +208,12 @@ jobs:
           echo "Sent update-dev and promote-staging events to GitOps:"
           echo "  Tag:    ${{ steps.meta.outputs.DEV_TAG }}"
           echo "  Digest: ${{ steps.build.outputs.digest }}"
+        
+      - name: Enforce vulnerability gate (fail if blocking scan failed)
+        if: always()
+        run: |
+          if [ "${{ steps.trivy_block.outcome }}" != "success" ]; then
+            echo "Trivy blocking scan failed (HIGH/CRITICAL found). Failing pipeline after reports."
+            exit 1
+          fi
 
