@@ -242,8 +242,7 @@ Promotioner initieras från application-repositoryt via `repository_dispatch`, p
 - **CI** – lint, format-kontroll, tester och coverage
 - **CD – DEV** – build och publicering av immutable multi-arch image (DEV) till GHCR, inklusive SBOM och Trivy scan
 - **Promote STAGING** – promotion av samma image digest från DEV
-- **Release PROD** – promotion av samma image digest till PROD utan rebuild
-
+- **Release PROD** – triggas via SemVer-tagg (`vX.Y.Z`) och promotar samma image digest till PROD utan rebuild
 ---
 
 ## Projektstruktur
