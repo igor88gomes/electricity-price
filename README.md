@@ -17,7 +17,8 @@
 
 ## Relaterade Repository
 
-**GitOps (deployment & environment promotion):** https://github.com/igor88gomes/electricity-price-gitops
+**GitOps (deployment & environment promotion):**  
+[electricity-price-gitops](https://github.com/igor88gomes/electricity-price-gitops).
 
 ## End-to-end CI/CD och GitOps-arkitektur
 
@@ -56,7 +57,7 @@
 
 ## Datakälla
 
-Applikationen hämtar elprisdata från **Elpriset just nu** (elprisetjustnu.se), exponerat via ett publikt API: https://www.elprisetjustnu.se/elpris-api
+Applikationen hämtar elprisdata via [Elpriset just nu – publikt API](https://www.elprisetjustnu.se/elpris-api).
 
 ## Teknikstack
 
