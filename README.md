@@ -100,35 +100,22 @@ Den Flask-baserade webbapplikationen låter användaren söka efter elpriser fö
 
 ## Installation & Körning (lokalt)
 
-### Klona projektet
+### 1️⃣ Klona projektet
 
 ```bash
 git clone https://github.com/igor88gomes/electricity-price.git
 cd electricity-price
 ```
 
-### Förutsättningar för containerbaserad körning
-
-Följande behöver vara installerat på systemet:
-
-- **Docker** med **Docker Compose** *eller* **Podman** med **Podman Compose**
-
-Instruktionerna nedan använder **Docker** som standard.  
-Vid användning av **Podman**, ersätt:
-- `docker` med `podman`
-- `docker compose` med `podman-compose`
-
-### Välj ett alternativ för att komma igång
-
-### Alternativ A: Kör med Docker Compose (Python ingår i imagen)
-
-#### 1️⃣ Bygg och starta applikationen med ett kommando
+### 2️⃣ Starta applikationen (Docker)
 
 ```bash
-docker compose up --build -d 
+docker compose up -d
 ```
 
-#### 2️⃣ Öppna i webbläsaren:
+> Detta använder en publicerad och verifierad release-image från GHCR.
+
+#### 3️⃣ Öppna i webbläsaren:
 
 - Applikationen: http://localhost:38080
 - Health check: http://localhost:38080/healthz
@@ -144,73 +131,6 @@ docker compose up --build -d
   <br>
   <em>Health check-endpoint (/healthz)</em>
 </p>
-
-### Alternativ B: Kör applikationen lokalt med Python-virtuell miljö (Kräver Python 3.12+ installerat)
-
-#### 1️⃣ Skapar lokal  miljö (katalogen .venv)
-
-```bash
-python -m venv .venv
-```
- 
-#### 2️⃣ Aktivera miljön
-
-> På macOS/Linux
-
-```bash
-source .venv/bin/activate  
-```
-
-> På Windows (PowerShell)
-
-```bash
-.\.venv\Scripts\Activate.ps1
-```
-
-> Tips: Om PowerShell klagar på skriptpolicy, kör: 
-> Set-ExecutionPolicy -Scope CurrentUser RemoteSigned 
-
-#### 3️⃣ Uppdatera pip och installera beroenden
-
-```bash
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
-
-#### 4️⃣ Starta applikationen
-
-```bash
-python -m flask --app application.app run
-```
-
-#### 5️⃣ Öppna sedan i webbläsaren:  
-
-http://localhost:5000
-
----
-
-### Testning lokalt (virtuell miljö)
-
-För att köra alla tester i terminalen:
-
-#### 1️⃣ Uppdatera pip och installera testberoenden
-
-```bash
-python -m pip install --upgrade pip
-python -m pip install -r requirements-test.txt
-```
-
-#### 2️⃣ Köra tester 
-
-```bash
-pytest -q
-```
-
-#### 3️⃣ Kör tester med coverage (samma mätning som i CI)
-
-```bash
-pytest -q --cov=application --cov-report=term
-```
 
 ---
 
