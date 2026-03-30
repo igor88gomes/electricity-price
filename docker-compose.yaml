@@ -1,8 +1,6 @@
 services:
   app:
-    build: .
-    image: electricity-price:local
-    container_name: electricity-price-app
+    image: ghcr.io/igor88gomes/electricity-price:v1.0.6
     ports:
       - "38080:8000"
     restart: unless-stopped
