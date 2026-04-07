@@ -129,7 +129,8 @@ def calculate_prices():
             render_template(
                 "message.html",
                 title="Elprisdata ej tillgänglig ännu",
-                message="Åtkomst till nästa dags elprisdata kommer att vara tillgänglig efter kl. 13:00.",
+                message="Åtkomst till nästa dags elprisdata kommer att vara tillgänglig efter kl. 13:00. "
+                "Vänligen försök igen senare.",
                 severity="warning",
                 back_url=url_for("index"),
             ),
@@ -148,6 +149,15 @@ def calculate_prices():
             502,
         )
 
+    prices = current_prices["Motsvarande pris i (kr/kWh)"]
+    stats = {
+        "avg": round(prices.mean(), 3),
+        "min": round(prices.min(), 3),
+        "max": round(prices.max(), 3),
+        "min_time": current_prices.loc[prices.idxmin(), "Tidpunkt på dygnet i (hh:mm)"],
+        "max_time": current_prices.loc[prices.idxmax(), "Tidpunkt på dygnet i (hh:mm)"],
+    }
+
     return render_template(
         "result.html",
         date=date,
@@ -156,6 +166,7 @@ def calculate_prices():
         error_message=None,
         pandas_table=create_pandas_table(current_prices),
         chart_html=create_chart(current_prices, date, price_class),
+        stats=stats,
     )
 
 

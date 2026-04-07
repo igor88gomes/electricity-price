@@ -3,28 +3,35 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-  <div class="card shadow-sm">
-    <div class="card-body">
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8 col-xl-7">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
 
-      <h1 class="h4 mb-3">{{ title }}</h1>
+          <h1 class="h5 fw-semibold mb-3">{{ title }}</h1>
 
-      {% if severity %}
-        <div class="alert alert-{{ severity }} mb-3" role="alert">
-          {{ message }}
+          {% if severity %}
+            <div class="alert alert-{{ severity }} mb-3" role="alert">
+              {{ message }}
+            </div>
+          {% else %}
+            <p class="mb-3 text-muted">{{ message }}</p>
+          {% endif %}
+
+          {% if details %}
+            <details class="mb-3">
+              <summary class="text-muted">Detaljer</summary>
+              <pre class="mt-2 mb-0 small">{{ details }}</pre>
+            </details>
+          {% endif %}
+
+          <a href="{{ back_url or '/' }}" class="btn btn-outline-secondary btn-sm">
+            Tillbaka
+          </a>
+
         </div>
-      {% else %}
-        <p class="mb-3">{{ message }}</p>
-      {% endif %}
-
-      {% if details %}
-        <details class="mb-3">
-          <summary>Detaljer</summary>
-          <pre class="mt-2 mb-0">{{ details }}</pre>
-        </details>
-      {% endif %}
-
-      <a href="{{ back_url or '/' }}" class="btn btn-secondary">Tillbaka</a>
+      </div>
     </div>
   </div>
 </div>
