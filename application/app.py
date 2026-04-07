@@ -129,7 +129,7 @@ def calculate_prices():
             render_template(
                 "message.html",
                 title="Elprisdata ej tillgänglig ännu",
-                message="Åtkomst till nästa dags elprisdata kommer att vara tillgänglig efter kl. 13:00. " \
+                message="Åtkomst till nästa dags elprisdata kommer att vara tillgänglig efter kl. 13:00. "
                 "Vänligen försök igen senare.",
                 severity="warning",
                 back_url=url_for("index"),
