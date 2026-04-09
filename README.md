@@ -115,14 +115,14 @@ docker compose up -d
 
 > Detta använder en publicerad och verifierad release-image från GHCR.
 
-### 3️⃣ Öppna i webbläsaren:
+### 3️⃣ Öppna i webbläsaren
 
-- Applikationen: http://localhost:38080
+- Applikationen: `http://localhost:38080`
 
 <p align="center">
-  <img src="docs/images/app-home.png" alt="Applikationen körs lokalt">
+  <img src="docs/images/app-home.png" alt="Applikationens startvy med formulär">
   <br>
-  <em>Startvy för applikationen (localhost:38080)</em>
+  <em>Formulär för att välja datum och område för att beräkna elpriser.</em>
 </p>
 
 ### 4️⃣ Databearbetning och visualisering
@@ -196,4 +196,4 @@ electricity-price/
 
 Igor Gomes — DevOps Engineer  
 **E-post:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com)  
-**LinkedIn:** [linkedin.com/in/igor-gomes-5b6184290](https://www.linkedin.com/in/igor-gomes-5b6184290)
+**LinkedIn:** [Igor Gomes](https://www.linkedin.com/in/igor-gomes-5b6184290)
