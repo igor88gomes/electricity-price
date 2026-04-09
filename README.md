@@ -115,10 +115,9 @@ docker compose up -d
 
 > Detta använder en publicerad och verifierad release-image från GHCR.
 
-#### 3️⃣ Öppna i webbläsaren:
+### 3️⃣ Öppna i webbläsaren:
 
 - Applikationen: http://localhost:38080
-- Health check: http://localhost:38080/healthz
 
 <p align="center">
   <img src="docs/images/app-home.png" alt="Applikationen körs lokalt">
@@ -126,10 +125,20 @@ docker compose up -d
   <em>Startvy för applikationen (localhost:38080)</em>
 </p>
 
+### 4️⃣ Databearbetning och visualisering
+
+- Resultatvy visas efter att formuläret har skickats in
+
 <p align="center">
-  <img src="docs/images/healthz.png" alt="Health check-endpoint">
+  <img src="docs/images/result-overview.png" alt="Resultatvy med diagram och sammanfattning">
   <br>
-  <em>Health check-endpoint (/healthz)</em>
+  <em>Bearbetad elprisdata visualiserad med Plotly samt sammanfattning av resultat.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/result-table.png" alt="Timvisa elpriser i tabellform">
+  <br>
+  <em>Timvisa elpriser presenterade i tabellformat (Pandas).</em>
 </p>
 
 ---
@@ -143,10 +152,6 @@ docker compose up -d
 | `/healthz`   | Liveness-check                       |
 | `/readyz`    | Readiness-check                      |
 | `/metrics`   | Prometheus-metrik                    |
-
-Exempel på åtkomst:
-
-http://localhost:38080/metrics
 
 > **Obs:** Endpointen `/calculate` används via formuläret i webbgränssnittet och är inte avsedd att anropas direkt i webbläsaren (HTTP POST).
 
