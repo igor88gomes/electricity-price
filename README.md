@@ -27,6 +27,7 @@
 - runtime-konfiguration och Helm-baserad deployment
 - validering, säkerhet och policy enforcement (GitHub Actions + OPA)
 - observability, dashboards och alerting i Kubernetes
+- rollback genom deklarativ GitOps-styrning
 
 > Tillsammans visar de ett komplett flöde från applikationskod till deployment via GitOps i ett Kubernetes-kluster.
 
