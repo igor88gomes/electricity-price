@@ -38,6 +38,10 @@ htmlcov/
 .ruff_cache/
 .cache/
 
+# Genererad dokumentation (HTML/CSS från källkod) 
+application/docs/*.html
+application/docs/*.css
+
 # Flask (lokal instansdata)
 instance/
 
