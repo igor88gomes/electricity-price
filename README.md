@@ -13,7 +13,22 @@
 
 # Electricity Price Sweden — Application Repository
 
-> Detta repository ansvarar för applikationskod och innehåller pipelines som testar, bygger och publicerar en container image (build artifact) samt initierar ett flöde till ett separat GitOps-repository.
+## Översikt
+
+### Det här repositoryt ansvarar för
+- applikationskod
+- tester, lint och coverage
+- säkerhetsskanning
+- build och publicering av container image (artifact)
+- triggar deployment till ett GitOps-repository
+
+### Separat GitOps-repository ansvarar för
+- deployment och miljö-promotion (DEV → STAGING → PROD)
+- runtime-konfiguration och Helm-baserad deployment
+- validering, säkerhet och policy enforcement (GitHub Actions + OPA)
+- observability, dashboards och alerting i Kubernetes
+
+> Tillsammans visar de ett komplett flöde från applikationskod till deployment via GitOps i ett Kubernetes-kluster.
 
 ## Relaterade Repository
 
@@ -46,9 +61,9 @@
 > Stateless design utan databas ger ett förutsägbart driftbeteende och underlättar horisontell
 > skalning i Kubernetes. 
 
-> Repositoryt visar ett leveransflöde med tester och coverage,
-> säkerhetsskanning samt build av ett immutabelt container image som konsumeras av ett separat
-> GitOps-repository för kontrollerad miljö-promotion.
+> Projektet visar ett komplett leveransflöde med tester, coverage och säkerhetsskanning,
+> där ett immutabelt container artifact levereras och används i ett separat GitOps-repository
+> för kontrollerad miljö-promotion.
 
 ### Avgränsningar
 > Beroende av extern API och dess publiceringstider samt begränsat datumintervall.  
