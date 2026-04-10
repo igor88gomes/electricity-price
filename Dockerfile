@@ -1,5 +1,5 @@
 # Basimage låst med manifest-digest för reproducerbara builds och kontrollerade säkerhetsuppdateringar
-FROM python:3.12.13-slim-trixie@sha256:804ddf3251a60bbf9c92e73b7566c40428d54d0e79d3428194edf40da6521286
+FROM python:3.12-slim@sha256:39e4e1ccb01578e3c86f7a0cf7b7fd89b8dbe2c27a88de11cf726ba669469f49
 
 # Miljövariabler för att undvika .pyc-filer och få omedelbar loggning i stdout
 ENV PYTHONDONTWRITEBYTECODE=1 \
