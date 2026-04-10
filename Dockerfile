@@ -1,5 +1,5 @@
 # Basimage låst med manifest-digest för reproducerbara builds och kontrollerade säkerhetsuppdateringar
-FROM python:3.12-slim@sha256:3d5ed973e45820f5ba5e46bd065bd88b3a504ff0724d85980dcd05eab361fcf4
+FROM python:3.12.13-slim-bookworm@sha256:d97792894a6a4162cae14da44542a83c75e56c77a27b92d58f3f83b7bc961292
 
 # Miljövariabler för att undvika .pyc-filer och få omedelbar loggning i stdout
 ENV PYTHONDONTWRITEBYTECODE=1 \
