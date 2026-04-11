@@ -189,6 +189,7 @@ Promotioner initieras från application-repositoryt via `repository_dispatch`, p
 - **CD – DEV** – build och publicering av immutable multi-arch image (DEV) till GHCR, inklusive SBOM och Trivy scan
 - **Promote STAGING** – promotion av samma image digest från DEV
 - **Release PROD** – triggas via SemVer-tagg (`vX.Y.Z`) och promotar samma image digest till PROD utan rebuild
+
 ---
 
 ## Projektstruktur
@@ -210,6 +211,8 @@ electricity-price/
 ├── requirements-test.txt   # Test- och CI-beroenden
 ├── README.md               # Projektöversikt, användning och arkitektur (engelska)
 └── README.sv.md            # Projektöversikt, användning och arkitektur (svenska)
+```
+
 ---
 
 ## Kontakt

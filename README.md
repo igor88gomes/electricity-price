@@ -160,6 +160,7 @@ docker compose up -d
   <em>Hourly electricity prices presented in table format (Pandas).</em>
 </p>
 
+---
 
 ## Key Endpoints
 
@@ -209,9 +210,10 @@ electricity-price/
 ├── README.md               # Project overview, usage and architecture (English)
 └── README.sv.md            # Project overview, usage and architecture (Swedish)
 ```
+---
 
 ## Contact
 
 Igor Gomes — DevOps Engineer  
-**Email:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com) 
+**Email:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com)
 **LinkedIn:** [Igor Gomes](https://www.linkedin.com/in/igor-gomes-5b6184290)
