@@ -9,207 +9,209 @@
 [![GHCR image](https://img.shields.io/badge/GHCR-image-blue)](https://github.com/users/igor88gomes/packages/container/package/electricity-price)
 ![Trivy](https://img.shields.io/badge/Trivy-image%20scan-red)
 
-> Av Igor Gomes
+🇸🇪 Swedish version:
+👉 [Read in Swedish](README.sv.md)
+
+---
+
+> By Igor Gomes
 
 # Electricity Price Sweden — Application Repository
 
-## Översikt
+## Overview
 
-### Det här repositoryt ansvarar för
-- applikationskod
-- tester, lint och coverage
-- säkerhetsskanning
-- build och publicering av container image (artifact)
-- triggar deployment till ett GitOps-repository
+### This repository is responsible for
+- application code
+- tests, lint and coverage
+- security scanning
+- build and publishing of the container image (artifact)
+- triggering deployment to a GitOps repository
 
-### Separat GitOps-repository ansvarar för
-- deployment och miljö-promotion (DEV → STAGING → PROD)
-- runtime-konfiguration och Helm-baserad deployment
-- validering, säkerhet och policy enforcement (GitHub Actions + OPA)
-- observability, dashboards och alerting i Kubernetes
-- rollback genom deklarativ GitOps-styrning
+### Separate GitOps repository is responsible for
+- deployment and environment promotion (DEV → STAGING → PROD)
+- runtime configuration and Helm-based deployment
+- validation, security and policy enforcement (GitHub Actions + OPA)
+- observability, dashboards and alerting in Kubernetes
+- rollback through declarative GitOps
 
-> Tillsammans visar de ett komplett flöde från applikationskod till deployment via GitOps i ett Kubernetes-kluster.
+> Together, they demonstrate a complete flow from application code to deployment using GitOps in a Kubernetes cluster.
 
-## Relaterade Repository
+## Related Repository
 
 **GitOps (deployment & environment promotion):** [electricity-price-gitops](https://github.com/igor88gomes/electricity-price-gitops)
 
-## End-to-end CI/CD och GitOps-arkitektur
+## End-to-end CI/CD and GitOps Architecture
 
 <p align="center">
-  <img src="docs/images/architecture.png" alt="Applikation och GitOps-arkitektur">
+  <img src="docs/images/architecture.png" alt="Application and GitOps architecture">
   <br>
-  <em>Övergripande CI/CD-flöde från applikationsbuild till GitOps-styrd deployment.</em>
+  <em>High-level CI/CD flow from application build to GitOps-driven deployment.</em>
 </p>
 
-> **Obs (säkerhet):** Pipelines i repositoryt kör kontinuerliga säkerhetsskanningar (**Trivy**, **Gitleaks**). Upptäckta secrets blockeras automatiskt av **Gitleaks** och stoppar flödet. Sårbarheter i beroenden och container image kan tillfälligt förekomma, identifieras av **Trivy** och hanteras löpande genom planerade uppdateringar.
+> **Note (security):** The pipelines in this repository run continuous security scans (**Trivy**, **Gitleaks**). Detected secrets are automatically blocked by **Gitleaks**, stopping the pipeline. Vulnerabilities in dependencies and the container image may temporarily occur, are identified by **Trivy**, and are handled continuously through planned updates.
 >
-> **Underhåll:** Dependabot används för schemalagda och kontrollerade uppdateringar av Python-beroenden, GitHub Actions och Docker base image.
+> **Maintenance:** Dependabot is used for scheduled and controlled updates of Python dependencies, GitHub Actions and the Docker base image.
 >
-> **Container build:** Imagen byggs via Dockerfile (non-root, pinned base image digest och healthcheck) och används både lokalt och i CI/CD-flödet.
+> **Container build:** The image is built via a Dockerfile (non-root, pinned base image digest and healthcheck) and is used both locally and in the CI/CD pipeline.
 
-## Projektöversikt
+## Project Overview
 
-### Vad
-> Python-baserad Flask-webbapplikation som visar elpriser för olika delar av Sverige per datum  
-> (tabell + diagram), baserat på extern realtids-API.
+### What
+> Python-based Flask web application that displays electricity prices for different regions in Sweden by date  
+> (table + charts), based on an external real-time API.
 
-### Varför
-> Byggd för att fungera som grund för ett tillförlitligt och produktionsnära leveransflöde.
+### Why
+> Built to serve as a foundation for a reliable and production-like delivery pipeline.
 
-### Värde
-> Stateless design utan databas ger ett förutsägbart driftbeteende och underlättar horisontell
-> skalning i Kubernetes. 
+### Value
+> A stateless design without a database provides predictable runtime behavior and enables horizontal scaling in Kubernetes. 
 
-> Projektet visar ett komplett leveransflöde med tester, coverage och säkerhetsskanning,
-> där ett immutabelt container artifact levereras och används i ett separat GitOps-repository
-> för kontrollerad miljö-promotion.
+> The project demonstrates a complete delivery pipeline with testing, coverage and security scanning,
+> where an immutable container artifact is built and used in a separate GitOps repository
+> for controlled environment promotion.
 
-### Avgränsningar
-> Beroende av extern API och dess publiceringstider samt begränsat datumintervall.  
-> Ingen caching (avsiktligt utanför scope).
+### Limitations
+> Depends on an external API and its publishing schedule, with a limited date range.  
+> No caching (intentionally out of scope).
 
-## Datakälla
+## Data Source
 
-**Elprisdata (publikt API):** [Elpriset just nu – elpris-api](https://www.elprisetjustnu.se/elpris-api)
+**Electricity price data (public API):** [Elpriset just nu – elpris-api](https://www.elprisetjustnu.se/elpris-api)
+## Tech Stack
 
-## Teknikstack
+| Component         | Purpose / Role                         |
+|-------------------|----------------------------------------|
+| Python            | Application language                   |
+| Flask             | Web framework (API & UI)               |
+| Jinja2            | Template rendering                     |
+| HTML / Bootstrap  | UI (frontend)                          |
+| Pandas            | Data processing                        |
+| Plotly            | Interactive charts                     |
+| pytest            | Unit testing                           |
+| prometheus-client | Metrics and monitoring                 |
 
-| Komponent         | Syfte / Roll                         |
-|-------------------|--------------------------------------|
-| Python            | Applikationsspråk                    |
-| Flask             | Webbramverk (API & UI)               |
-| Jinja2            | Template-rendering                   |
-| HTML / Bootstrap  | UI (frontend)                        |
-| Pandas            | Databehandling                       |
-| Plotly            | Interaktiva diagram                  |
-| pytest            | Enhetstestning                       |
-| prometheus-client | Metrik och monitoring                |
+## Dependency Management
 
-## Dependency management
+The project separates runtime and test dependencies into different files.
 
-Projektet separerar runtime- och testberoenden i separata filer.
-
-| Fil                     | Innehåll                               | Användning                 |
+| File                    | Content                                | Usage                      |
 |-------------------------|----------------------------------------|----------------------------|
-| `requirements.txt`      | Runtime-beroenden för applikationen    | Bygga container image      |
-| `requirements-test.txt` | Test-, coverage- och CI-verktyg        | CI-pipeline och lokal test |
-   
----
-
-## Applikationsbeskrivning
-
-Den Flask-baserade webbapplikationen låter användaren söka efter elpriser för olika delar av Sverige för ett valt datum. Applikationen visar timvisa elpriser (00:00–23:00). Data hämtas från en extern API, bearbetas med Pandas och presenteras i tabellform samt som interaktiva Plotly-diagram.
-
-## Funktioner
-
-- Formulär för att välja datum
-- Hämtar elprisdata automatiskt via API
-- Visar resultat i tabellformat
-- Interaktiv diagram-visualisering
-- Hälsokontroller: `/healthz` och `/readyz`
-- Prometheus-metrik på `/metrics`
-- Fullt enhetstestad med `pytest`
+| `requirements.txt`      | Runtime dependencies for the application | Build container image      |
+| `requirements-test.txt` | Test, coverage and CI tools            | CI pipeline and local testing |
 
 ---
 
-## Installation & Körning (lokalt)
+## Application Description
 
-### 1️⃣ Klona projektet
+The Flask-based web application allows users to search for electricity prices for different regions in Sweden for a selected date. The application displays hourly electricity prices (00:00–23:00). Data is retrieved from an external API, processed with Pandas, and presented in both table format and interactive Plotly charts.
+
+## Features
+
+- Form to select date  
+- Automatically fetches electricity price data via API  
+- Displays results in table format  
+- Interactive chart visualization  
+- Health checks: `/healthz` and `/readyz`  
+- Prometheus metrics available at `/metrics`  
+- Fully unit tested with `pytest`  
+
+---
+
+## Installation & Run (local)
+
+### 1️⃣ Clone the project
 
 ```bash
 git clone https://github.com/igor88gomes/electricity-price.git
 cd electricity-price
 ```
 
-### 2️⃣ Starta applikationen (Docker)
+### 2️⃣ Start the application (Docker)
 
 ```bash
 docker compose up -d
 ```
 
-> Detta använder en publicerad och verifierad release-image från GHCR.
+> This uses a published and verified release image of the application, pulled directly from GHCR.
 
-### 3️⃣ Öppna i webbläsaren
+### 3️⃣ Open in the browser
 
-- Applikationen: `http://localhost:38080`
-
-<p align="center">
-  <img src="docs/images/app-home.png" alt="Applikationens startvy med formulär">
-  <br>
-  <em>Formulär för att välja datum och område för att beräkna elpriser.</em>
-</p>
-
-### 4️⃣ Databearbetning och visualisering
-
-- Resultatvy visas efter att formuläret har skickats in
+- Application: `http://localhost:38080`
 
 <p align="center">
-  <img src="docs/images/result-overview.png" alt="Resultatvy med diagram och sammanfattning">
+  <img src="docs/images/app-home.png" alt="Application home view with form">
   <br>
-  <em>Bearbetad elprisdata visualiserad med Plotly samt sammanfattning av resultat.</em>
+  <em>Form to select date and region for electricity price calculation.</em>
+</p>
+
+### 4️⃣ Data processing and visualization
+
+- The result view is shown after the form has been submitted
+
+<p align="center">
+  <img src="docs/images/result-overview.png" alt="Result view with chart and summary">
+  <br>
+  <em>Processed electricity price data visualized with Plotly together with a result summary.</em>
 </p>
 
 <p align="center">
-  <img src="docs/images/result-table.png" alt="Timvisa elpriser i tabellform">
+  <img src="docs/images/result-table.png" alt="Hourly electricity prices in table format">
   <br>
-  <em>Timvisa elpriser presenterade i tabellformat (Pandas).</em>
+  <em>Hourly electricity prices presented in table format (Pandas).</em>
 </p>
+
+
+## Key Endpoints
+
+| Endpoint     | Function                              |
+|--------------|----------------------------------------|
+| `/`          | Home view with form                   |
+| `/calculate` | Calculates and displays electricity data |
+| `/healthz`   | Liveness check                        |
+| `/readyz`    | Readiness check                       |
+| `/metrics`   | Prometheus metrics                    |
+
+> **Note:** The `/calculate` endpoint is used via the web interface form and is not intended to be accessed directly in the browser (HTTP POST).
+
+## CI/CD Pipelines (Build → PR to GitOps → Deployment)
+
+Build, security checks, and publishing of the container image to GitHub Container Registry (GHCR) are handled by the application repository pipelines, while deployment and environment promotion are executed via a separate GitOps repository.
+
+Promotions are initiated from the application repository using `repository_dispatch`, with one workflow per environment. This triggers workflows in the GitOps repository that create Pull Requests, which in turn trigger sync and deployment in each environment (DEV, STAGING, PROD).
+
+### Workflows in Application Repository
+
+- **Secret Scan** – secret scanning with Gitleaks  
+- **CI** – linting, formatting checks, tests and coverage  
+- **CD – DEV** – build and publish immutable multi-arch image (DEV) to GHCR, including SBOM and Trivy scan  
+- **Promote STAGING** – promotes the same image digest from DEV  
+- **Release PROD** – triggered via SemVer tag (`vX.Y.Z`) and promotes the same image digest to PROD without rebuild  
 
 ---
 
-## Viktiga endpoints
+## Project Structure
 
-| Endpoint     | Funktion                             |
-|--------------|--------------------------------------|
-| `/`          | Startvy med formulär                 |
-| `/calculate` | Beräknar och visar elprisdata        |
-| `/healthz`   | Liveness-check                       |
-| `/readyz`    | Readiness-check                      |
-| `/metrics`   | Prometheus-metrik                    |
-
-> **Obs:** Endpointen `/calculate` används via formuläret i webbgränssnittet och är inte avsedd att anropas direkt i webbläsaren (HTTP POST).
-
-## CI/CD-pipelines (Build → PR till GitOps → Deployment)
-
-Build, säkerhetskontroller och publicering av container image till GitHub Container Registry (GHCR) sker via application-repositoryts pipelines, medan deployment och miljö-promotion verkställs via ett separat GitOps-repository.
-
-Promotioner initieras från application-repositoryt via `repository_dispatch`, per workflow för respektive miljö, vilket triggar workflows i GitOps-repositoryt som skapar Pull Requests som i sin tur triggar synk och deployment i respektive miljö (DEV, STAGING, PROD).
-
-### Workflows i Application Repository
-
-- **Secret Scan** – secret scanning med Gitleaks
-- **CI** – lint, format-kontroll, tester och coverage
-- **CD – DEV** – build och publicering av immutable multi-arch image (DEV) till GHCR, inklusive SBOM och Trivy scan
-- **Promote STAGING** – promotion av samma image digest från DEV
-- **Release PROD** – triggas via SemVer-tagg (`vX.Y.Z`) och promotar samma image digest till PROD utan rebuild
----
-
-## Projektstruktur
-
-```text
+```
 electricity-price/
-├── .github/workflows/      # CI/CD-workflows (CI, Docker publish, secret-scan, promote-staging, release-prod)
-├── application/            # Flask-applikation: routes, logik, templates och statiska filer
-├── docs/                   # Dokumentation (t.ex. skärmdumpar, extra beskrivningar)
-├── tests/                  # Pytest-tester för applikationen
-├── .dockerignore           # Utesluter onödiga filer från Docker build-context
-├── .gitignore              # Ignorerade filer (virtuell miljö, cache, rapporter, etc.)
-├── .gitleaks.toml          # Regler för secret scanning (Gitleaks)
-├── .ruff.toml              # Konfiguration för Ruff (lint och format)
-├── docker-compose.yaml     # Lokal körning med Docker Compose
-├── Dockerfile              # Bygger Docker-image för Flask-applikationen
-├── pytest.ini              # Pytest-konfiguration (plugins, options)
-├── requirements.txt        # Runtime-beroenden för applikationen
-├── requirements-test.txt   # Test- och CI-beroenden
-└── README.md               # Projektöversikt, användning och arkitektur
+├── .github/workflows/      # CI/CD workflows (CI, Docker publish, secret-scan, promote-staging, release-prod)
+├── application/            # Flask application: routes, logic, templates and static files
+├── docs/                   # Documentation (e.g. screenshots, additional descriptions)
+├── tests/                  # Pytest tests for the application
+├── .dockerignore           # Excludes unnecessary files from Docker build context
+├── .gitignore              # Ignored files (virtual environment, cache, reports, etc.)
+├── .gitleaks.toml          # Rules for secret scanning (Gitleaks)
+├── .ruff.toml              # Configuration for Ruff (lint and format)
+├── docker-compose.yaml     # Local execution with Docker Compose
+├── Dockerfile              # Builds Docker image for the Flask application
+├── pytest.ini              # Pytest configuration (plugins, options)
+├── requirements.txt        # Runtime dependencies for the application
+├── requirements-test.txt   # Test and CI dependencies
+├── README.md               # Project overview, usage and architecture (English)
+└── README.sv.md            # Project overview, usage and architecture (Swedish)
 ```
 
----
-
-## Kontakt
+## Contact
 
 Igor Gomes — DevOps Engineer  
-**E-post:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com)  
+**Email:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com) 
 **LinkedIn:** [Igor Gomes](https://www.linkedin.com/in/igor-gomes-5b6184290)
