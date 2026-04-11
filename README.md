@@ -215,5 +215,5 @@ electricity-price/
 ## Contact
 
 Igor Gomes — DevOps Engineer  
-**Email:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com)
+**Email:** [igor88gomes@gmail.com](mailto:igor88gomes@gmail.com)  
 **LinkedIn:** [Igor Gomes](https://www.linkedin.com/in/igor-gomes-5b6184290)
