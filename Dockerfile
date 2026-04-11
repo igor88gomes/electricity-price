@@ -1,9 +1,12 @@
 # Basimage låst med manifest-digest för reproducerbara builds och kontrollerade säkerhetsuppdateringar
-FROM python:3.12-slim@sha256:39e4e1ccb01578e3c86f7a0cf7b7fd89b8dbe2c27a88de11cf726ba669469f49
+FROM python:3.12.13-alpine3.22@sha256:f6973b8f9395204414a7f25d99a50ba1c7306064771d11a8c2a848e9af3697a6
 
 # Miljövariabler för att undvika .pyc-filer och få omedelbar loggning i stdout
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
+
+# Uppdatera Alpine-paket innan Python-beroenden installeras
+RUN apk update && apk upgrade --no-cache
 
 # Skapa en icke-root användare med fast UID (1000) för bättre säkerhet
 RUN adduser --disabled-password --gecos "" --uid 1000 appuser
