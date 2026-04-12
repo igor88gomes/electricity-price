@@ -17,17 +17,19 @@ app = Flask(__name__)
 
 HTTP_REQUESTS = Counter(
     "app_http_requests_total",
-    "Totalt antal HTTP-anrop",
+    "Total number of HTTP requests",
     ["method", "endpoint", "http_status"],
 )
+
 HTTP_LATENCY = Histogram(
     "app_request_latency_seconds",
-    "Latens för HTTP-anrop (sekunder)",
+    "HTTP request latency (seconds)",
     ["endpoint"],
 )
+
 UPSTREAM_REQUESTS = Counter(
     "app_upstream_requests_total",
-    "Totalt antal upstream-anrop (resultat)",
+    "Total number of upstream requests (result)",
     ["result"],
 )
 
@@ -92,7 +94,7 @@ def calculate_prices():
         return (
             render_template(
                 "message.html",
-                title="Ogiltig prisklass",
+                title="Invalid price area",
                 message=str(exc),
                 severity="danger",
                 back_url=url_for("index"),
@@ -106,7 +108,7 @@ def calculate_prices():
         return (
             render_template(
                 "message.html",
-                title="Ogiltigt datum",
+                title="Invalid date",
                 message=message,
                 severity="danger",
                 back_url=url_for("index"),
@@ -128,9 +130,10 @@ def calculate_prices():
         return (
             render_template(
                 "message.html",
-                title="Elprisdata ej tillgänglig ännu",
-                message="Åtkomst till nästa dags elprisdata kommer att vara tillgänglig efter kl. 13:00. "
-                "Vänligen försök igen senare.",
+                title="Electricity price data not available yet",
+                message=(
+                    "Electricity price data for the next day becomes available after 13:00. Please try again later."
+                ),
                 severity="warning",
                 back_url=url_for("index"),
             ),
@@ -141,21 +144,21 @@ def calculate_prices():
         return (
             render_template(
                 "message.html",
-                title="Tillfälligt fel",
-                message="Kunde inte hämta elprisdata just nu. Försök igen om en stund.",
+                title="Temporary error",
+                message="Could not fetch electricity price data at the moment. Please try again later.",
                 severity="danger",
                 back_url=url_for("index"),
             ),
             502,
         )
 
-    prices = current_prices["Motsvarande pris i (kr/kWh)"]
+    prices = current_prices["Corresponding price (kr/kWh)"]
     stats = {
         "avg": round(prices.mean(), 3),
         "min": round(prices.min(), 3),
         "max": round(prices.max(), 3),
-        "min_time": current_prices.loc[prices.idxmin(), "Tidpunkt på dygnet i (hh:mm)"],
-        "max_time": current_prices.loc[prices.idxmax(), "Tidpunkt på dygnet i (hh:mm)"],
+        "min_time": current_prices.loc[prices.idxmin(), "Time of day (hh:mm)"],
+        "max_time": current_prices.loc[prices.idxmax(), "Time of day (hh:mm)"],
     }
 
     return render_template(
@@ -175,8 +178,8 @@ def handle_not_found_error(_error):
     return (
         render_template(
             "message.html",
-            title="Sidan hittades inte",
-            message="Sidan du försökte nå finns inte.",
+            title="Page not found",
+            message="The page you are trying to access does not exist.",
             severity="warning",
             back_url=url_for("index"),
         ),
@@ -190,8 +193,8 @@ def handle_internal_server_error(error):
     return (
         render_template(
             "message.html",
-            title="Intern Serverfel",
-            message="Ett oväntat fel inträffade. Försök igen senare.",
+            title="Internal server error",
+            message="An unexpected error occurred. Please try again later.",
             details=details,
             severity="danger",
             back_url=url_for("index"),

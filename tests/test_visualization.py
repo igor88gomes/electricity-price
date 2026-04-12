@@ -15,8 +15,8 @@ def test_create_pandas_dataframe():
 
     assert isinstance(df, pd.DataFrame)
     assert len(df) == 24
-    assert "Tidpunkt på dygnet i (hh:mm)" in df.columns
-    assert "Motsvarande pris i (kr/kWh)" in df.columns
+    assert "Time of day (hh:mm)" in df.columns
+    assert "Corresponding price (kr/kWh)" in df.columns
 
 
 def test_create_pandas_dataframe_raises_on_incomplete_data():
@@ -25,15 +25,15 @@ def test_create_pandas_dataframe_raises_on_incomplete_data():
         {"time_start": "2023-11-05T01:00:00Z", "SEK_per_kWh": 45.0},
     ]
 
-    with pytest.raises(ValueError, match="Förväntade minst 24 timposter från upstream-API"):
+    with pytest.raises(ValueError, match="Expected at least 24 hourly entries from the upstream API"):
         create_pandas_dataframe(sample_data)
 
 
 def test_create_pandas_table():
     current_prices = pd.DataFrame(
         {
-            "Tidpunkt på dygnet i (hh:mm)": ["00:00", "01:00"],
-            "Motsvarande pris i (kr/kWh)": [0.1, 0.2],
+            "Time of day (hh:mm)": ["00:00", "01:00"],
+            "Corresponding price (kr/kWh)": [0.1, 0.2],
         }
     )
 
@@ -45,8 +45,8 @@ def test_create_pandas_table():
 def test_create_pandas_table_includes_bootstrap_classes():
     current_prices = pd.DataFrame(
         {
-            "Tidpunkt på dygnet i (hh:mm)": ["00:00"],
-            "Motsvarande pris i (kr/kWh)": [0.1],
+            "Time of day (hh:mm)": ["00:00"],
+            "Corresponding price (kr/kWh)": [0.1],
         }
     )
 
@@ -57,8 +57,8 @@ def test_create_pandas_table_includes_bootstrap_classes():
 def test_create_chart():
     current_prices = pd.DataFrame(
         {
-            "Tidpunkt på dygnet i (hh:mm)": ["00:00", "01:00", "02:00"],
-            "Motsvarande pris i (kr/kWh)": [0.1, 0.2, 0.3],
+            "Time of day (hh:mm)": ["00:00", "01:00", "02:00"],
+            "Corresponding price (kr/kWh)": [0.1, 0.2, 0.3],
         }
     )
 

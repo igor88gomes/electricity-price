@@ -66,8 +66,8 @@ def test_metrics_exposes_upstream_requests_total(client, get_text, monkeypatch):
     def _fake_fetch_and_process_elpris_data(year, month, day, price_class):
         df = pd.DataFrame(
             {
-                "Tidpunkt på dygnet i (hh:mm)": ["00:00"],
-                "Motsvarande pris i (kr/kWh)": [0.1],
+                "Time of day (hh:mm)": ["00:00"],
+                "Corresponding price (kr/kWh)": [0.1],
             }
         )
         return df, "2022-11-01", None

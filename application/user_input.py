@@ -10,6 +10,6 @@ def get_user_input():
     price_class = request.form["price_class"]
 
     if price_class not in ALLOWED_PRICE_CLASSES:
-        raise ValueError("Ogiltig prisklass.")
+        raise ValueError("Invalid price area.")
 
     return year, month, day, price_class
