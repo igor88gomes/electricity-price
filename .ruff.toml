@@ -1,38 +1,29 @@
-﻿# Ruff-konfiguration (lint + format) för Python-projektet
-# Mål: snabb statisk analys, konsekvent stil och Py312-funktioner.
-
-# Python-version (matchar projektets runtime)
+﻿# Ruff configuration for linting and formatting
 target-version = "py312"
-
-# Max radlängd (hållbar med HTML-templating och tests)
 line-length = 120
 
-# Vilka regelset som aktiveras (balans mellan nytta och signal/brus)
 [lint]
 select = [
   "E",   # pycodestyle errors
   "F",   # pyflakes
-  "I",   # isort (importsortering)
-  "UP",  # pyupgrade (moderna språkfeatures)
-  "B",   # bugbear (vanliga bugmönster)
-  "PL",  # pylint-liknande (rimligt subset)
-  "RUF", # ruff-specifika förbättringar
+  "I",   # isort
+  "UP",  # pyupgrade
+  "B",   # bugbear
+  "PL",  # pylint-like checks
+  "RUF", # Ruff-specific rules
 ]
 
-# Några regler som ofta ger falska positiva i små Flask-appar
 ignore = [
-  "PLR0913",  # för många argument i funktioner (ok i små endpoints)
-  "PLR2004",  # magiska tal (ok i tests)
+  "PLR0913",  # Too many arguments in function definition
+  "PLR2004",  # Magic values in comparisons
 ]
 
-# Format-inställningar (kompatibel med Black-stil)
 [format]
 quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "lf"
 
-# isort (importsortering) – standardprofil
 [lint.isort]
 known-first-party = ["application", "tests"]
 combine-as-imports = true

@@ -1,18 +1,18 @@
 title = "Custom Gitleaks config (minimal)"
 
-# Endast tillåt välkända Actions-referenser; inga riktiga hemligheter tillåts.
 [allowlist]
-description = "Ignorera GitHub Actions-sekretsreferenser och bot-e-post; resten skannas normalt."
+description = "Allow common GitHub Actions references and bot emails; all other findings are scanned normally."
 
-# Filer/sökvägar där mönstret kan förekomma (endast workflows)
+# Limit allowlist to workflow files only
 paths = [
   '''\.github/workflows/.*\.ya?ml'''
 ]
 
-# Vanliga strängar som INTE är hemligheter i detta repo
+# Patterns that are not considered secrets in this repository
 regexes = [
-  # GH Actions token-referens (inte ett verkligt värde)
+  # GitHub Actions token reference (not a real secret value)
   '''\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}''',
-  # Botens noreply-adress
+
+  # GitHub Actions bot noreply email
   '''github-actions\[bot\]@users\.noreply\.github\.com'''
 ]
