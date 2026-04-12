@@ -22,6 +22,7 @@ jobs:
     steps:
       - name: Compute STAGING tag
         id: meta
+        shell: bash
         run: echo "STG_TAG=staging-${{ inputs.sha }}" >> $GITHUB_OUTPUT
 
       - name: Resolve digest from DEV image

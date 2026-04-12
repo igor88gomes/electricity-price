@@ -1,6 +1,5 @@
 version: 2
 updates:
-  # Uppdaterar GitHub Actions som används i workflows (checkout, buildx, trivy m.fl.)
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -15,7 +14,6 @@ updates:
         patterns: ["*"]
         update-types: ["patch", "minor"]
 
-  # Kontrollerade uppdateringar av Python-beroenden
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
@@ -30,8 +28,6 @@ updates:
         patterns: ["*"]
         update-types: ["patch", "minor"]
 
-  # Kontrollerade uppdateringar av Docker-images
-  # Versions-tagg är låst och digest används per image
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
