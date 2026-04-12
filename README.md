@@ -77,6 +77,7 @@
 ## Data Source
 
 **Electricity price data (public API):** [Elpriset just nu – elpris-api](https://www.elprisetjustnu.se/elpris-api)
+
 ## Tech Stack
 
 | Component         | Purpose / Role                         |
