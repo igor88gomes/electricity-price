@@ -1,4 +1,4 @@
-name: CI (lint, tester, coverage)
+name: CI (lint, tests, coverage)
 
 on:
   push:
@@ -63,7 +63,7 @@ jobs:
           mkdir -p .github/badges
           genbadge coverage -i coverage.xml -o .github/badges/coverage.svg
 
-      # Om test- och coverage-resultatet är oförändrat förblir coverage.svg identisk och ingen PR skapas.
+      # If test and coverage results are unchanged, coverage.svg stays identical and no PR is created.
       - name: Create PR for coverage badge update
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: peter-evans/create-pull-request@v8

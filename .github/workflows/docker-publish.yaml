@@ -20,7 +20,7 @@ permissions:
   contents: read
   actions: write
   packages: write
-  security-events: write   
+  security-events: write
 
 jobs:
   build-publish:
@@ -174,7 +174,7 @@ jobs:
           path: sbom/sbom.cdx.json
           retention-days: 14
 
-      # GitOps drivs via repository_dispatch: uppdatera DEV och trigga promotion-flödet med samma tag + digest (inga rebuilds i GitOps)
+      # GitOps is driven through repository_dispatch: update DEV and trigger the promotion flow with the same tag and digest (no rebuilds in GitOps)
       - name: Dispatch dev-update event to GitOps
         if: steps.trivy_block.outcome == 'success'
         uses: peter-evans/repository-dispatch@v4

@@ -3,7 +3,7 @@ name: Release PROD (SemVer + GitOps Dispatch)
 on:
   push:
     tags:
-      - 'v*.*.*'   # SemVer taggar
+      - 'v*.*.*'   # SemVer tags
 
 env:
   IMAGE_REPO: ghcr.io/igor88gomes/electricity-price
@@ -35,8 +35,8 @@ jobs:
         id: meta
         run: echo "REL_TAG=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
 
-      # Återanvänder DEV:s multi-arch-manifest för PROD (ingen rebuild).
-      # Release triggas av SemVer-tagg, medan GitOps deployerar via digest.
+      # Reuses the DEV multi-arch manifest for PROD (no rebuild).
+      # The release is triggered by a SemVer tag, while GitOps deploys by digest.
       - name: Reuse DEV image and resolve PROD digest
         id: build
         shell: bash
