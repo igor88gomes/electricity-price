@@ -12,53 +12,53 @@ pip-wheel-metadata/
 build/
 dist/
 
-# Virtuella miljöer (skapas lokalt, ska inte till Git) 
+# Virtual environments (local only)
 .venv/
 venv/
 env/
-__pypackages__/            # PEP 582
+__pypackages__/  # PEP 582
 
-# Miljövariabler / hemligheter
+# Environment variables and secrets
 .env
 .env.local
-.env.*                     # ex: .env.dev / .env.prod
-*.env                      # env-filer med godtyckliga namn
+.env.*
+*.env
 *.secret
 *.key
-.python-version            # pyenv-versionfil
+.python-version  # pyenv version file
 
-# Test-artefakter 
+# Test artifacts and coverage reports
 .pytest_cache/
 .coverage
 .coverage.*
-coverage.xml               # pytest coverage-rapport (XML)
+coverage.xml
 htmlcov/
 .tox/
 .mypy_cache/
 .ruff_cache/
 .cache/
 
-# Test artifact (local Trivy image scan)
+# Local security scan artifact (Trivy)
 electricity-price-local-test.tar
 
-# Genererad dokumentation (HTML/CSS från källkod) 
+# Generated documentation
 application/docs/*.html
 application/docs/*.css
 
-# Flask (lokal instansdata)
+# Flask instance folder
 instance/
 
-# IDE / Editor 
+# IDE / Editor
 .vscode/
 .idea/
 *.code-workspace
 
-# OS-specifika filer 
+# OS-specific files
 .DS_Store
 Thumbs.db
 desktop.ini
 *~
 *.swp
 
-# Loggar 
+# Logs
 *.log
