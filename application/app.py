@@ -128,18 +128,17 @@ def calculate_prices():
 
     if err == "no_data_yet":
         return (
-           render_template(
-               "message.html",
-               title="Electricity price data not available yet",
-               message=(
-                "Electricity price data for the next day becomes available after 13:00. "
-                "Please try again later."
+            render_template(
+                "message.html",
+                title="Electricity price data not available yet",
+                message=(
+                    "Electricity price data for the next day becomes available after 13:00. Please try again later."
+                ),
+                severity="warning",
+                back_url=url_for("index"),
             ),
-               severity="warning",
-               back_url=url_for("index"),
-           ),
-           503,
-       )
+            503,
+        )
 
     if err == "upstream_error":
         return (
