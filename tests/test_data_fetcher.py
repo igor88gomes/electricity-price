@@ -25,7 +25,7 @@ def test_get_elpris_data_from_api_404_returns_no_data_yet(monkeypatch):
         status_code = 404
 
         def raise_for_status(self):
-            raise requests.exceptions.HTTPError("Statuskod: 404")
+            raise requests.exceptions.HTTPError("Status code: 404")
 
         def json(self):
             return {"error": "Not Found"}
@@ -42,7 +42,7 @@ def test_get_elpris_data_from_api_http_error_non_404_returns_upstream_error(monk
         status_code = 500
 
         def raise_for_status(self):
-            raise requests.exceptions.HTTPError("Statuskod: 500")
+            raise requests.exceptions.HTTPError("Status code: 500")
 
         def json(self):
             return {"error": "Server Error"}

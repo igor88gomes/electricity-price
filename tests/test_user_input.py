@@ -25,5 +25,5 @@ def test_get_user_input_invalid_price_class_raises_value_error():
         method="POST",
         data={"year": "2023", "month": "11", "day": "10", "price_class": "SE9"},
     ):
-        with pytest.raises(ValueError, match=r"Ogiltig prisklass\."):
+        with pytest.raises(ValueError, match=r"Invalid price area\."):
             get_user_input()

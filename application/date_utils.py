@@ -37,6 +37,7 @@ def is_valid_date(year, month, day):
 def validate_date(year, month, day):
     if not is_valid_date(year, month, day):
         return (
-            "Sidan är begränsad till en dag i förväg och senast 2022-11-01 bakåt i tiden.",
+            "The application allows selecting dates from 2022-11-01 up to one day ahead.",
             422,
         )
+    return None

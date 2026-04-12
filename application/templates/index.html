@@ -9,16 +9,16 @@
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4 p-md-5">
                     <div class="text-center mb-4">
-                        <h1 class="display-6 fw-bold mb-3">Välkommen till Electricity Price Sweden</h1>
+                        <h1 class="display-6 fw-bold mb-3">Welcome to Electricity Price Sweden</h1>
                         <p class="lead text-muted mb-0">
-                            Fyll i uppgifterna nedan för att visa elpriser för olika delar av Sverige.
+                            Select a date and price area to view electricity prices in Sweden
                         </p>
                     </div>
 
                     <form method="POST" action="/calculate">
                         <div class="row g-3">
                             <div class="col-12 col-md-4">
-                                <label for="year" class="form-label">År</label>
+                                <label for="year" class="form-label">Year</label>
                                 <select class="form-select" id="year" name="year" required>
                                     {% for y in range(min_date.year, next_day.year + 1) %}
                                         <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
@@ -27,7 +27,7 @@
                             </div>
 
                             <div class="col-12 col-md-4">
-                                <label for="month" class="form-label">Månad</label>
+                                <label for="month" class="form-label">Month</label>
                                 <select class="form-select" id="month" name="month" required>
                                     {% for m in range(1, 13) %}
                                         <option value="{{ m }}" {% if m == month %}selected{% endif %}>{{ m }}</option>
@@ -36,7 +36,7 @@
                             </div>
 
                             <div class="col-12 col-md-4">
-                                <label for="day" class="form-label">Dag</label>
+                                <label for="day" class="form-label">Day</label>
                                 <select class="form-select" id="day" name="day" required>
                                     {% for d in range(1, 32) %}
                                         <option value="{{ d }}" {% if d == day %}selected{% endif %}>{{ d }}</option>
@@ -45,18 +45,18 @@
                             </div>
 
                             <div class="col-12">
-                                <label for="price_class" class="form-label">Prisklass</label>
+                                <label for="price_class" class="form-label">Price area</label>
                                 <select class="form-select" id="price_class" name="price_class" required>
                                     {% for option in ["SE1", "SE2", "SE3", "SE4"] %}
                                         <option value="{{ option }}" {% if option == price_class %}selected{% endif %}>
                                             {% if option == "SE1" %}
-                                                SE1 = Luleå / Norra Sverige
+                                                SE1 = Luleå / Northern Sweden
                                             {% elif option == "SE2" %}
-                                                SE2 = Sundsvall / Norra Mellansverige
+                                                SE2 = Sundsvall / North Central Sweden
                                             {% elif option == "SE3" %}
-                                                SE3 = Stockholm / Södra Mellansverige
+                                                SE3 = Stockholm / South Central Sweden
                                             {% elif option == "SE4" %}
-                                                SE4 = Malmö / Södra Sverige
+                                                SE4 = Malmö / Southern Sweden
                                             {% endif %}
                                         </option>
                                     {% endfor %}
@@ -65,12 +65,12 @@
 
                             <div class="col-12">
                                 <div class="alert alert-info mb-0 small">
-                                    Tillgängligt datumintervall: {{ min_date }} till {{ next_day }}
+                                    Available date range: {{ min_date }} to {{ next_day }}
                                 </div>
                             </div>
 
                             <div class="col-12 d-grid mt-2">
-                                <button class="btn btn-primary btn-lg fw-semibold" type="submit">Beräkna elpris</button>
+                                <button class="btn btn-primary btn-lg fw-semibold" type="submit">Calculate electricity price</button>
                             </div>
                         </div>
                     </form>

@@ -27,7 +27,7 @@ def test_invalid_date_calculation(client, get_text):
         data={"year": "2022", "month": "10", "day": "31", "price_class": "SE1"},
     )
     assert response.status_code == 422
-    assert "Ogiltigt datum" in get_text(response)
+    assert "Invalid date" in get_text(response)
 
 
 def test_invalid_price_class_calculation(client, get_text):
@@ -37,16 +37,15 @@ def test_invalid_price_class_calculation(client, get_text):
     )
     assert response.status_code == 422
     text = get_text(response)
-    assert "Ogiltig prisklass" in text
-    assert "Ogiltig prisklass." in text
+    assert "Invalid price area" in text
 
 
 def test_calculate_success_renders_result(client, monkeypatch, get_text):
     def _fake_fetch_and_process_elpris_data(year, month, day, price_class):
         df = pd.DataFrame(
             {
-                "Tidpunkt på dygnet i (hh:mm)": ["00:00", "01:00"],
-                "Motsvarande pris i (kr/kWh)": [0.1, 0.2],
+                "Time of day (hh:mm)": ["00:00", "01:00"],
+                "Corresponding price (kr/kWh)": [0.1, 0.2],
             }
         )
         return df, "2022-11-01", None
@@ -62,7 +61,7 @@ def test_calculate_success_renders_result(client, monkeypatch, get_text):
     )
 
     assert response.status_code == 200
-    assert "Elprisresultat" in get_text(response)
+    assert "Electricity Prices" in get_text(response)
 
 
 def test_calculate_returns_no_data_yet_message(client, monkeypatch, get_text):
@@ -81,8 +80,8 @@ def test_calculate_returns_no_data_yet_message(client, monkeypatch, get_text):
 
     assert response.status_code == 503
     text = get_text(response)
-    assert "efter kl. 13:00" in text
-    assert "Elprisdata ej tillgänglig ännu" in text
+    assert "after 13:00" in text
+    assert "Electricity price data not available yet" in text
 
 
 def test_calculate_returns_upstream_error_message(client, monkeypatch, get_text):
@@ -101,20 +100,22 @@ def test_calculate_returns_upstream_error_message(client, monkeypatch, get_text)
 
     assert response.status_code == 502
     text = get_text(response)
-    assert "Tillfälligt fel" in text
-    assert "Kunde inte hämta elprisdata" in text
+    assert "Temporary error" in text
+    assert "Could not fetch electricity price data" in text
 
 
 def test_invalid_endpoint(client, get_text):
     response = client.get("/nonexistent")
     assert response.status_code == 404
-    assert "Sidan hittades inte" in get_text(response) or "Sidan du försökte nå finns inte" in get_text(response)
+    assert "Page not found" in get_text(response) or "The page you are trying to access does not exist" in get_text(
+        response
+    )
 
 
 def test_404_handler_returns_message(client, get_text):
     response = client.get("/does-not-exist")
     assert response.status_code == 404
-    assert "Sidan du försökte nå finns inte." in get_text(response)
+    assert "The page you are trying to access does not exist." in get_text(response)
 
 
 def test_internal_server_error(client):
@@ -122,4 +123,4 @@ def test_internal_server_error(client):
         response, status = handle_internal_server_error(RuntimeError("boom"))
 
     assert status == 500
-    assert "Intern Serverfel" in response
+    assert "Internal server error" in response

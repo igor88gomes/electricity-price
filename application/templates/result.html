@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Elprisresultat{% endblock %}
+{% block title %}Results{% endblock %}
 
 {% block content %}
 <div class="container py-4">
@@ -8,21 +8,21 @@
         <div class="col-12 col-xl-10">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                 <div>
-                    <h1 class="display-6 fw-bold mb-1">Elprisresultat</h1>
-                    <p class="text-muted mb-0">Timvisa elpriser för vald dag och prisklass.</p>
+                    <h1 class="display-6 fw-bold mb-1">Electricity Prices</h1>
+                    <p class="text-muted mb-0">Hourly electricity prices for the selected date and price area</p>
                 </div>
-                <a href="/" class="btn btn-outline-secondary btn-sm">Tillbaka till startsidan</a>
+                <a href="/" class="btn btn-outline-secondary btn-sm">Back to home</a>
             </div>
 
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
-                            <p class="mb-1"><strong>Datum:</strong></p>
+                            <p class="mb-1"><strong>Date:</strong></p>
                             <p class="mb-0 text-muted">{{ date }}</p>
                         </div>
                         <div class="col-12 col-md-6">
-                            <p class="mb-1"><strong>Prisklass:</strong></p>
+                            <p class="mb-1"><strong>Price area:</strong></p>
                             <p class="mb-0 text-muted">{{ price_class }}</p>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
 
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body">
-                    <h2 class="h6 text-muted mb-3">Diagram</h2>
+                    <h2 class="h6 text-muted mb-3">Chart</h2>
                     <div id="plotly-chart" class="mt-2">
                         {{ chart_html | safe }}
                     </div>
@@ -40,19 +40,19 @@
 
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body">
-                    <h2 class="h6 text-muted mb-3">Sammanfattning</h2>
+                    <h2 class="h6 text-muted mb-3">Summary</h2>
 
                     <p class="mb-2">
-                        <strong>Genomsnitt:</strong> {{ stats.avg }} kr/kWh
+                        <strong>Average:</strong> {{ stats.avg }} kr/kWh
                     </p>
 
                     <p class="mb-2">
-                        <strong>Lägsta:</strong>
+                        <strong>Lowest:</strong>
                         <span class="text-success">{{ stats.min }} kr/kWh</span> ({{ stats.min_time }})
                     </p>
 
                     <p class="mb-0">
-                        <strong>Högsta:</strong>
+                        <strong>Highest:</strong>
                         <span class="text-danger">{{ stats.max }} kr/kWh</span> ({{ stats.max_time }})
                     </p>
                 </div>
@@ -60,7 +60,7 @@
 
             <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h2 class="h5 mb-3">Timvisa priser</h2>
+                    <h2 class="h5 mb-3">Hourly prices</h2>
                     <div class="table-responsive rounded">
                         {{ pandas_table | safe }}
                     </div>

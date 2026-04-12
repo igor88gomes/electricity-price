@@ -38,6 +38,9 @@ htmlcov/
 .ruff_cache/
 .cache/
 
+# Test artifact (local Trivy image scan)
+electricity-price-local-test.tar
+
 # Genererad dokumentation (HTML/CSS från källkod) 
 application/docs/*.html
 application/docs/*.css
