@@ -18,6 +18,8 @@
 
 # Electricity Price Sweden — Application Repository
 
+A DevOps-focused project demonstrating a complete delivery workflow, including CI/CD, GitOps, integrated security practices, observability, policy enforcement and controlled environment promotion, built around a self-developed application.
+
 ## Overview
 
 ### This repository is responsible for
