@@ -13,7 +13,7 @@ RUN adduser --disabled-password --gecos "" --uid 1000 appuser
 
 WORKDIR /app
 
-# Install runtime dependencies only
+# Install runtime dependencies only (test dependencies are managed separately)
 COPY requirements.txt .
 
 RUN python -m pip install --upgrade "pip>=26,<27" --no-cache-dir && \
