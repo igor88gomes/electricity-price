@@ -40,7 +40,7 @@ A DevOps-focused project demonstrating a complete delivery workflow, including C
 
 ## Related Repository
 
-**GitOps (deployment & environment promotion):** [electricity-price-gitops](https://github.com/igor88gomes/electricity-price-gitops)
+**GitOps (deployment & environment promotion):** [electricity-price-gitops](https://github.com/igor-gomes-1/electricity-price-gitops)
 
 ## End-to-end CI/CD and GitOps Architecture
 
