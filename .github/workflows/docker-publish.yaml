@@ -13,8 +13,8 @@ on:
   workflow_dispatch: {}
 
 env:
-  IMAGE_REPO: ghcr.io/igor-gomes-1/electricity-price
-  GITOPS_REPO: igor-gomes-1/electricity-price-gitops
+  IMAGE_REPO: ghcr.io/igor88gomes/electricity-price
+  GITOPS_REPO: igor88gomes/electricity-price-gitops
 
 permissions:
   contents: read
@@ -180,7 +180,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.GH_PAT }}
-          repository: igor-gomes-1/electricity-price-gitops
+          repository: igor88gomes/electricity-price-gitops
           event-type: update-dev
           client-payload: >-
             {
@@ -193,7 +193,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.GH_PAT }}
-          repository: igor-gomes-1/electricity-price-gitops
+          repository: igor88gomes/electricity-price-gitops
           event-type: promote-staging
           client-payload: >-
             {

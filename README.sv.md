@@ -40,7 +40,7 @@ Ett DevOps-fokuserat projekt som demonstrerar ett komplett leveransflöde, inklu
 
 ## Relaterade Repository
 
-**GitOps (deployment & environment promotion):** [electricity-price-gitops](https://github.com/igor-gomes-1/electricity-price-gitops)
+**GitOps (deployment & environment promotion):** [electricity-price-gitops](https://github.com/igor88gomes/electricity-price-gitops)
 
 ## End-to-end CI/CD och GitOps-arkitektur
 
