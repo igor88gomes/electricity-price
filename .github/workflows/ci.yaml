@@ -68,7 +68,7 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore(ci): update coverage badge"
           title: "chore(ci): update coverage badge"
           body: "Coverage badge updated by CI. Requires manual review and merge."
