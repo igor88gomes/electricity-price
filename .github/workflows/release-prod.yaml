@@ -6,8 +6,8 @@ on:
       - 'v*.*.*'   # SemVer tags
 
 env:
-  IMAGE_REPO: ghcr.io/igor88gomes/electricity-price
-  GITOPS_REPO: igor88gomes/electricity-price-gitops
+  IMAGE_REPO: ghcr.io/igor-gomes-1/electricity-price
+  GITOPS_REPO: igor-gomes-1/electricity-price-gitops
 
 permissions:
   contents: read

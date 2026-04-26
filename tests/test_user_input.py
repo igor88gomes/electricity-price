@@ -27,3 +27,36 @@ def test_get_user_input_invalid_price_class_raises_value_error():
     ):
         with pytest.raises(ValueError, match=r"Invalid price area\."):
             get_user_input()
+
+
+def test_get_user_input_invalid_date_input_raises_value_error():
+    app = Flask(__name__)
+
+    with app.test_request_context(
+        method="POST",
+        data={"year": "abc", "month": "11", "day": "10", "price_class": "SE1"},
+    ):
+        with pytest.raises(ValueError, match=r"Invalid date input\."):
+            get_user_input()
+
+
+def test_get_user_input_missing_field_raises_value_error():
+    app = Flask(__name__)
+
+    with app.test_request_context(
+        method="POST",
+        data={"month": "11", "day": "10", "price_class": "SE1"},  # missing year
+    ):
+        with pytest.raises(ValueError, match=r"Invalid date input\."):
+            get_user_input()
+
+
+def test_get_user_input_empty_values_raises_value_error():
+    app = Flask(__name__)
+
+    with app.test_request_context(
+        method="POST",
+        data={"year": "", "month": "", "day": "", "price_class": "SE1"},
+    ):
+        with pytest.raises(ValueError, match=r"Invalid date input\."):
+            get_user_input()
