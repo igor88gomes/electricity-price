@@ -40,6 +40,18 @@ def test_invalid_price_class_calculation(client, get_text):
     assert "Invalid price area" in text
 
 
+def test_malformed_date_input_calculation(client, get_text):
+    response = client.post(
+        "/calculate",
+        data={"year": "abc", "month": "11", "day": "1", "price_class": "SE1"},
+    )
+
+    assert response.status_code == 422
+    text = get_text(response)
+    assert "Invalid price area" in text
+    assert "Invalid date input." in text
+
+
 def test_calculate_success_renders_result(client, monkeypatch, get_text):
     def _fake_fetch_and_process_elpris_data(year, month, day, price_class):
         df = pd.DataFrame(
