@@ -194,23 +194,26 @@ Dessa workflows triggar events i GitOps repository, där Pull Requests skapas. N
 
 > Promotion mellan miljöer återanvänder samma immutable image digest som byggs en gång i DEV.
 
-- **Secret Scan** – secret scanning med Gitleaks  
-- **CI** – linting, formatting checks, tester och coverage  
+#### **Secret Scan (`secret-scan.yaml`)** 
+– secret scanning med Gitleaks  
 
-- **CD – DEV**
+#### **CI (`ci.yaml`)** 
+– linting, formatting checks, tester och coverage  
+
+#### **CD – DEV (`docker-publish.yaml`)**
   - Build och publicering av immutable multi-arch image till GHCR  
   - Genererar SBOM och kör Trivy security scans  
   - Skickar `update-dev` event till GitOps  
   - ➝ I GitOps repository: en Pull Request skapas och auto-mergas i DEV  
   - Triggar nästa steg i promotion-flödet (STAGING workflow i application repo)  
 
-- **Promote STAGING**
+#### **Promote STAGING (`promote-staging.yaml`)**
   - Dedikerat workflow för STAGING promotion  
   - Resolverar eller tar emot image digest från DEV  
   - Skickar `promote-staging` event till GitOps  
   - ➝ I GitOps repository: en Pull Request skapas för manuell review i STAGING  
 
-- **Release PROD**
+#### **Release PROD (`release-prod.yaml`)**
   - Triggas manuellt via SemVer-tagg (`vX.Y.Z`)  
   - Promotar samma immutable image digest som används i DEV och STAGING till PROD  
   - Skickar `release-prod` event till GitOps  
