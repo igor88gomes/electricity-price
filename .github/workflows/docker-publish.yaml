@@ -188,24 +188,22 @@ jobs:
               "digest": "${{ steps.build.outputs.digest }}"
             }
 
-      - name: Dispatch promote-staging event to GitOps
+      # STAGING promotion is delegated to the dedicated staging workflow.
+      - name: Trigger STAGING promotion workflow
         if: steps.trivy_block.outcome == 'success'
-        uses: peter-evans/repository-dispatch@v4
-        with:
-          token: ${{ secrets.GH_PAT }}
-          repository: ${{ env.GITOPS_REPO }}
-          event-type: promote-staging
-          client-payload: >-
-            {
-              "sha": "${{ github.sha }}",
-              "tag": "${{ steps.meta.outputs.DEV_TAG }}",
-              "digest": "${{ steps.build.outputs.digest }}"
-            }
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh workflow run promote-staging.yaml \
+            --ref main \
+            -f sha="${{ github.sha }}" \
+            -f tag="${{ steps.meta.outputs.DEV_TAG }}" \
+            -f digest="${{ steps.build.outputs.digest }}"
 
       - name: Info
         if: steps.trivy_block.outcome == 'success'
         run: |
-          echo "Sent update-dev and promote-staging events to GitOps:"
+          echo "Sent update-dev event to GitOps and triggered STAGING promotion workflow:"
           echo "  Tag:    ${{ steps.meta.outputs.DEV_TAG }}"
           echo "  Digest: ${{ steps.build.outputs.digest }}"
         
