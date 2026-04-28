@@ -1,4 +1,4 @@
-name: CD (build & publish DEV + GitOps Dispatch)
+name: CD – Build, Scan & Publish DEV
 
 on:
   push:

@@ -180,17 +180,41 @@ docker compose up -d
 
 ## CI/CD-pipelines (Build → PR till GitOps → Deployment)
 
-Build, säkerhetskontroller och publicering av container image till GitHub Container Registry (GHCR) sker via application-repositoryts pipelines, medan deployment och miljö-promotion verkställs via ett separat GitOps-repository.
+Build, säkerhetskontroller och publicering av container image till GitHub Container Registry (GHCR) hanteras av application repository pipelines, medan deployment och miljö-promotion utförs via ett separat GitOps repository.
 
-Promotioner initieras från application-repositoryt via `repository_dispatch`, per workflow för respektive miljö, vilket triggar workflows i GitOps-repositoryt som skapar Pull Requests som i sin tur triggar synk och deployment i respektive miljö (DEV, STAGING, PROD).
+Promotioner initieras från application repository via `repository_dispatch`. Varje miljö har ett dedikerat workflow, och promotion sker stegvis:
+
+- DEV uppdateras direkt efter en lyckad build.  
+- STAGING promotion triggas via ett dedikerat workflow i application repository.  
+- PROD promotas via ett release workflow baserat på SemVer-taggar.  
+
+Dessa workflows triggar events i GitOps repository, där Pull Requests skapas. När dessa mergas synkroniserar Argo CD desired state och deployar till respektive miljö (DEV, STAGING, PROD).
 
 ### Workflows i Application Repository
 
-- **Secret Scan** – secret scanning med Gitleaks
-- **CI** – lint, format-kontroll, tester och coverage
-- **CD – DEV** – build och publicering av immutable multi-arch image (DEV) till GHCR, inklusive SBOM och Trivy scan
-- **Promote STAGING** – promotion av samma image digest från DEV
-- **Release PROD** – triggas via SemVer-tagg (`vX.Y.Z`) och promotar samma image digest till PROD utan rebuild
+> Promotion mellan miljöer återanvänder samma immutable image digest som byggs en gång i DEV.
+
+- **Secret Scan** – secret scanning med Gitleaks  
+- **CI** – linting, formatting checks, tester och coverage  
+
+- **CD – DEV**
+  - Build och publicering av immutable multi-arch image till GHCR  
+  - Genererar SBOM och kör Trivy security scans  
+  - Skickar `update-dev` event till GitOps  
+  - ➝ I GitOps repository: en Pull Request skapas och auto-mergas i DEV  
+  - Triggar nästa steg i promotion-flödet (STAGING workflow i application repo)  
+
+- **Promote STAGING**
+  - Dedikerat workflow för STAGING promotion  
+  - Resolverar eller tar emot image digest från DEV  
+  - Skickar `promote-staging` event till GitOps  
+  - ➝ I GitOps repository: en Pull Request skapas för manuell review i STAGING  
+
+- **Release PROD**
+  - Triggas manuellt via SemVer-tagg (`vX.Y.Z`)  
+  - Promotar samma immutable image digest som används i DEV och STAGING till PROD  
+  - Skickar `release-prod` event till GitOps  
+  - ➝ I GitOps repository: en Pull Request skapas för manuell review innan deployment  
 
 ---
 

@@ -181,15 +181,39 @@ docker compose up -d
 
 Build, security checks, and publishing of the container image to GitHub Container Registry (GHCR) are handled by the application repository pipelines, while deployment and environment promotion are executed via a separate GitOps repository.
 
-Promotions are initiated from the application repository using `repository_dispatch`, with one workflow per environment. This triggers workflows in the GitOps repository that create Pull Requests, which in turn trigger sync and deployment in each environment (DEV, STAGING, PROD).
+Promotions are initiated from the application repository using `repository_dispatch`. Each environment has a dedicated workflow, and promotion is orchestrated step-by-step:
+
+- DEV is updated directly after a successful build.
+- STAGING promotion is triggered via a dedicated workflow in the application repository.
+- PROD is promoted via a tagged release workflow.
+
+These workflows trigger events in the GitOps repository, where Pull Requests are created. Once merged, Argo CD synchronizes the desired state and deploys to each environment (DEV, STAGING, PROD).
 
 ### Workflows in Application Repository
 
+> Promotion across environments reuses the same immutable image digest built once in DEV.
+
 - **Secret Scan** – secret scanning with Gitleaks  
 - **CI** – linting, formatting checks, tests and coverage  
-- **CD – DEV** – build and publish immutable multi-arch image (DEV) to GHCR, including SBOM and Trivy scan  
-- **Promote STAGING** – promotes the same image digest from DEV  
-- **Release PROD** – triggered via SemVer tag (`vX.Y.Z`) and promotes the same image digest to PROD without rebuild  
+
+- **CD – DEV**
+  - Build and publish immutable multi-arch image to GHCR  
+  - Generate SBOM and run Trivy security scans  
+  - Dispatch `update-dev` event to GitOps  
+  - ➝ In the GitOps repository: a Pull Request is created and auto-merged in DEV  
+  - Triggers the next step in the promotion flow (STAGING workflow in the application repo)  
+
+- **Promote STAGING**
+  - Dedicated workflow for STAGING promotion  
+  - Resolves or receives the image digest from DEV  
+  - Dispatches `promote-staging` event to GitOps  
+  - ➝ In the GitOps repository: a Pull Request is created for manual review in STAGING  
+
+- **Release PROD**
+  - Triggered manually via SemVer tag (`vX.Y.Z`)  
+  - Promotes the same immutable image digest used in DEV and STAGING to PROD  
+  - Dispatches `release-prod` event to GitOps  
+  - ➝ In the GitOps repository: a Pull Request is created for manual review before deployment  
 
 ---
 
