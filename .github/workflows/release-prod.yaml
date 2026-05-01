@@ -74,7 +74,7 @@ jobs:
           } >> $GITHUB_STEP_SUMMARY
 
       - name: Upload digest artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: image-digest
           path: image-digest.txt
