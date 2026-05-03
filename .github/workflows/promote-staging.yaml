@@ -72,6 +72,13 @@ jobs:
 
           echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
 
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       # Mark the same digest promoted to STAGING as the current release candidate
       - name: Mark image as release candidate
         shell: bash
