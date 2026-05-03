@@ -183,9 +183,9 @@ Build, security checks, and publishing of the container image to GitHub Containe
 
 Promotions are initiated from the application repository using `repository_dispatch`. Each environment has a dedicated workflow, and promotion is orchestrated step-by-step:
 
-- DEV is updated directly after a successful build.
-- STAGING promotion is triggered via a dedicated workflow in the application repository.
-- PROD is promoted via a tagged release workflow.
+- DEV builds and publishes the initial artifact and triggers STAGING.
+- STAGING promotes and validates the artifact and prepares the release candidate.
+- PROD promotes the validated release candidate via a tagged release.
 
 These workflows trigger events in the GitOps repository, where Pull Requests are created. Once merged, Argo CD synchronizes the desired state and deploys to each environment (DEV, STAGING, PROD).
 
@@ -204,17 +204,18 @@ These workflows trigger events in the GitOps repository, where Pull Requests are
   - Generate SBOM and run Trivy security scans  
   - Dispatch `update-dev` event to GitOps  
   - ➝ In the GitOps repository: a Pull Request is created and auto-merged in DEV  
-  - Triggers the next step in the promotion flow (STAGING workflow in the application repo)  
+  - Triggers the next step in the promotion flow (STAGING workflow)
 
 #### **Promote STAGING (`promote-staging.yaml`)**
-  - Dedicated workflow for STAGING promotion  
   - Resolves or receives the image digest from DEV  
   - Dispatches `promote-staging` event to GitOps  
   - ➝ In the GitOps repository: a Pull Request is created for manual review in STAGING  
+  - Marks the validated image digest as the current **release candidate** in the container registry  
 
 #### **Release PROD (`release-prod.yaml`)**
   - Triggered manually via SemVer tag (`vX.Y.Z`)  
-  - Promotes the same immutable image digest used in DEV and STAGING to PROD  
+  - Promotes the current **release candidate** image digest to PROD  
+  - Creates a versioned image tag (`vX.Y.Z`) in GHCR (no rebuild)  
   - Dispatches `release-prod` event to GitOps  
   - ➝ In the GitOps repository: a Pull Request is created for manual review before deployment  
 
