@@ -180,13 +180,13 @@ docker compose up -d
 
 ## CI/CD-pipelines (Build → PR till GitOps → Deployment)
 
-Build, säkerhetskontroller och publicering av container image till GitHub Container Registry (GHCR) hanteras av application repository pipelines, medan deployment och miljö-promotion utförs via ett separat GitOps repository.
+Build, säkerhetskontroller och publicering av container image till GitHub Container Registry (GHCR) hanteras av pipelines i application repository, medan deployment och miljö-promotion utförs via ett separat GitOps repository.
 
 Promotioner initieras från application repository via `repository_dispatch`. Varje miljö har ett dedikerat workflow, och promotion sker stegvis:
 
-- DEV uppdateras direkt efter en lyckad build.  
-- STAGING promotion triggas via ett dedikerat workflow i application repository.  
-- PROD promotas via ett release workflow baserat på SemVer-taggar.  
+- DEV bygger och publicerar artefakten och triggar STAGING.  
+- STAGING promouterar och validerar artefakten samt förbereder en release candidate.  
+- PROD promouterar den validerade release candidate via en SemVer-baserad release.  
 
 Dessa workflows triggar events i GitOps repository, där Pull Requests skapas. När dessa mergas synkroniserar Argo CD desired state och deployar till respektive miljö (DEV, STAGING, PROD).
 
@@ -201,21 +201,22 @@ Dessa workflows triggar events i GitOps repository, där Pull Requests skapas. N
 – linting, formatting checks, tester och coverage  
 
 #### **CD – DEV (`docker-publish.yaml`)**
-  - Build och publicering av immutable multi-arch image till GHCR  
+  - Bygger och publicerar en immutable multi-arch image till GHCR  
   - Genererar SBOM och kör Trivy security scans  
   - Skickar `update-dev` event till GitOps  
   - ➝ I GitOps repository: en Pull Request skapas och auto-mergas i DEV  
-  - Triggar nästa steg i promotion-flödet (STAGING workflow i application repo)  
+  - Triggar nästa steg i promotion-flödet (STAGING workflow)
 
 #### **Promote STAGING (`promote-staging.yaml`)**
-  - Dedikerat workflow för STAGING promotion  
   - Resolverar eller tar emot image digest från DEV  
   - Skickar `promote-staging` event till GitOps  
   - ➝ I GitOps repository: en Pull Request skapas för manuell review i STAGING  
+  - Markerar det validerade image digestet som aktuell **release candidate** i container-registret  
 
 #### **Release PROD (`release-prod.yaml`)**
   - Triggas manuellt via SemVer-tagg (`vX.Y.Z`)  
-  - Promotar samma immutable image digest som används i DEV och STAGING till PROD  
+  - Promoterar aktuell **release candidate** till PROD  
+  - Skapar en versions-tag (`vX.Y.Z`) i GHCR (utan rebuild)  
   - Skickar `release-prod` event till GitOps  
   - ➝ I GitOps repository: en Pull Request skapas för manuell review innan deployment  
 

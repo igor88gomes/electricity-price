@@ -23,7 +23,7 @@ env:
 permissions:
   contents: read
   actions: write
-  packages: read
+  packages: write
 
 jobs:
   promote:
@@ -72,6 +72,18 @@ jobs:
 
           echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
 
+      # Mark the same digest promoted to STAGING as the current release candidate
+      - name: Mark image as release candidate
+        shell: bash
+        run: |
+          docker buildx imagetools create \
+            --tag "${IMAGE_REPO}:release-candidate" \
+            "${IMAGE_REPO}@${{ steps.resolved_digest.outputs.digest }}"
+
+          echo "Marked release candidate:"
+          echo "  Tag:    ${IMAGE_REPO}:release-candidate"
+          echo "  Digest: ${{ steps.resolved_digest.outputs.digest }}"
+
       - name: Dispatch promote-staging event to GitOps
         uses: peter-evans/repository-dispatch@v4
         with:
@@ -91,3 +103,4 @@ jobs:
           echo "  SHA:    ${{ steps.meta.outputs.SHORT_SHA }}"
           echo "  Tag:    ${{ steps.meta.outputs.PROMOTION_TAG }}"
           echo "  Digest: ${{ steps.resolved_digest.outputs.digest }}"
+          echo "  Release candidate: ${IMAGE_REPO}:release-candidate"

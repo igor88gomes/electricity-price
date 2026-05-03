@@ -35,22 +35,20 @@ jobs:
         id: meta
         run: echo "REL_TAG=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
 
-      # Reuses the DEV multi-arch manifest for PROD (no rebuild).
-      # The release is triggered by a SemVer tag, while GitOps deploys by digest.
-      - name: Reuse DEV image and resolve PROD digest
+      # Reuses the current release-candidate manifest for PROD
+      - name: Promote release candidate as PROD release
         id: build
         shell: bash
         run: |
-          SHORT_SHA="${GITHUB_SHA::7}"
-          DEV_TAG="dev-${SHORT_SHA}"
           REL_TAG="${{ steps.meta.outputs.REL_TAG }}"
+          CANDIDATE_TAG="release-candidate"
 
-          echo "Using DEV_TAG=${DEV_TAG}"
+          echo "Using RELEASE_CANDIDATE=${IMAGE_REPO}:${CANDIDATE_TAG}"
           echo "Using REL_TAG=${REL_TAG}"
 
           docker buildx imagetools create \
             --tag "${IMAGE_REPO}:${REL_TAG}" \
-            "${IMAGE_REPO}:${DEV_TAG}"
+            "${IMAGE_REPO}:${CANDIDATE_TAG}"
 
           DIGEST=$(docker buildx imagetools inspect "${IMAGE_REPO}:${REL_TAG}" | sed -n 's/^Digest: //p' | head -n1)
 
@@ -59,7 +57,7 @@ jobs:
             exit 1
           fi
 
-          echo "Resolved manifest digest (same as DEV/STAGING): ${DIGEST}"
+          echo "Resolved manifest digest (same as release-candidate): ${DIGEST}"
           echo "digest=${DIGEST}" >> "$GITHUB_OUTPUT"
 
       - name: Expose image digest
@@ -97,3 +95,4 @@ jobs:
           echo "Sent release-prod event to GitOps:"
           echo "  Version: ${{ steps.meta.outputs.REL_TAG }}"
           echo "  Digest:  ${{ steps.build.outputs.digest }}"
+          echo "  Source:  ${IMAGE_REPO}:release-candidate"
