@@ -219,6 +219,13 @@ These workflows trigger events in the GitOps repository, where Pull Requests are
   - Dispatches `release-prod` event to GitOps  
   - ➝ In the GitOps repository: a Pull Request is created for manual review before deployment  
 
+#### **Dependabot Updates (`dependabot.yaml`)**
+- Updates GitHub Actions dependencies  
+- Updates Python packages  
+- Updates Docker base image references  
+- Runs on a monthly schedule  
+- Opens a limited number of Pull Requests for review  
+
 ---
 
 ## Project Structure
