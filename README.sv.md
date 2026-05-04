@@ -220,6 +220,13 @@ Dessa workflows triggar events i GitOps repository, där Pull Requests skapas. N
   - Skickar `release-prod` event till GitOps  
   - ➝ I GitOps repository: en Pull Request skapas för manuell review innan deployment  
 
+#### **Dependabot Updates (`dependabot.yaml`)**
+- Uppdaterar GitHub Actions-dependenser  
+- Uppdaterar Python-paket  
+- Uppdaterar Docker base image-referenser  
+- Körs enligt ett månatligt schema  
+- Öppnar ett begränsat antal Pull Requests för granskning
+
 ---
 
 ## Projektstruktur
