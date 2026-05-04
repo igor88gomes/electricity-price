@@ -1,5 +1,5 @@
 # Base image pinned by manifest digest for reproducible builds and controlled security updates
-FROM python:3.12.13-alpine3.22@sha256:f6973b8f9395204414a7f25d99a50ba1c7306064771d11a8c2a848e9af3697a6
+FROM python:3.12.13-alpine3.22@sha256:a190708a2dec1bd18b1decb539f8e8f5407abaa9bf39cacda583f7f8c11db322
 
 # Avoid .pyc files and enable unbuffered stdout logging
 ENV PYTHONDONTWRITEBYTECODE=1 \
