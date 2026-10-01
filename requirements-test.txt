@@ -2,5 +2,5 @@ colorama>=0.4,<1
 coverage>=7.3,<8
 iniconfig>=2,<3
 pluggy>=1.6,<2
-pytest>=9,<10
+pytest>=9.1.1,<10
 pytest-cov>=7.1.0,<8
